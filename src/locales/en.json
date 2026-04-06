@@ -612,7 +612,7 @@
         "description": "Pay with Telegram Stars"
       },
       "robokassa": {
-        "description": "Pay via Robokassa"
+        "description": "SBP · Russian bank cards"
       },
       "heleket": {
         "description": "Pay with cryptocurrency via Heleket"

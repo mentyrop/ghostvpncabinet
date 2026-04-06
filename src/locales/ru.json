@@ -640,7 +640,7 @@
         "description": "Оплата через Telegram Stars"
       },
       "robokassa": {
-        "description": "Оплата через Robokassa"
+        "description": "СБП · Карты РФ"
       },
       "heleket": {
         "description": "Оплата криптовалютой через Heleket"
