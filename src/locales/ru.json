@@ -639,6 +639,9 @@
       "telegram_stars": {
         "description": "Оплата через Telegram Stars"
       },
+      "robokassa": {
+        "description": "Оплата через Robokassa"
+      },
       "heleket": {
         "description": "Оплата криптовалютой через Heleket"
       },

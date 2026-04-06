@@ -4,6 +4,7 @@ export const METHOD_LABELS: Record<string, string> = {
   cryptobot: 'CryptoBot',
   heleket: 'Heleket',
   yookassa: 'YooKassa',
+  robokassa: 'Robokassa',
   mulenpay: 'MulenPay',
   pal24: 'PayPalych',
   platega: 'Platega',

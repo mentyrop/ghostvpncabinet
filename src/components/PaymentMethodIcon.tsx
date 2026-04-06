@@ -45,6 +45,26 @@ export default function PaymentMethodIcon({
         </svg>
       );
 
+    case 'robokassa': {
+      const rkGradId = `${uid}-robokassa`;
+      return (
+        <svg className={className} viewBox="0 0 40 40">
+          <defs>
+            <linearGradient id={rkGradId} x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#111827" />
+              <stop offset="100%" stopColor="#4B5563" />
+            </linearGradient>
+          </defs>
+          <circle cx="20" cy="20" r="20" fill={`url(#${rkGradId})`} />
+          <g fill="#fff" fontFamily="Arial,sans-serif" fontWeight="700">
+            <text x="20" y="26" textAnchor="middle" fontSize="12">
+              RK
+            </text>
+          </g>
+        </svg>
+      );
+    }
+
     case 'heleket':
       return (
         <svg className={className} viewBox="0 0 40 40">
