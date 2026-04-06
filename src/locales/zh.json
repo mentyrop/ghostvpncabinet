@@ -3477,7 +3477,7 @@
     "name": "姓名",
     "registeredAt": "注册时间",
     "emailAuth": "邮箱认证",
-    "linkEmailDescription": "绑定邮箱以便无需Telegram登录。绑定后将收到验证邮件。",
+    "linkEmailDescription": "绑定邮箱以便无需Telegram登录。",
     "linkEmail": "绑定邮箱",
     "emailRequired": "请输入邮箱",
     "invalidEmail": "请输入有效的电子邮件地址",

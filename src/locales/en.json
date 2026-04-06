@@ -4090,7 +4090,7 @@
     "name": "Name",
     "registeredAt": "Registered",
     "emailAuth": "Email Authentication",
-    "linkEmailDescription": "Link your email to log in without Telegram. After linking, you'll receive a verification email.",
+    "linkEmailDescription": "Link your email to log in without Telegram.",
     "linkEmail": "Link Email",
     "emailRequired": "Email is required",
     "invalidEmail": "Please enter a valid email address",

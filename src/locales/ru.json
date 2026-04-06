@@ -4639,7 +4639,7 @@
     "name": "Имя",
     "registeredAt": "Дата регистрации",
     "emailAuth": "Авторизация по Email",
-    "linkEmailDescription": "Привяжите email для входа без Telegram. После привязки на ваш email придёт письмо для подтверждения.",
+    "linkEmailDescription": "Привяжите email для входа без Telegram.",
     "linkEmail": "Привязать Email",
     "emailRequired": "Введите email",
     "invalidEmail": "Введите корректный email адрес",
