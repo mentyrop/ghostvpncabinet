@@ -1,0 +1,1 @@
+function u(r){const t=Math.floor(r/86400),o=Math.floor(r%86400/3600),n=Math.floor(r%3600/60);return t>0?`${t}d ${o}h`:o>0?`${o}h ${n}m`:`${n}m`}function a(r){const t=r/100;return new Intl.NumberFormat("ru-RU",{style:"currency",currency:"RUB",maximumFractionDigits:0}).format(t)}export{u as a,a as f};
