@@ -385,25 +385,40 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                     )}
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className={cn('text-[2rem] font-black leading-none', isLight ? 'text-[#111827]' : 'text-dark-50')}>
+                      <p className={cn('text-[2.1rem] font-black leading-none sm:text-[2.35rem]', isLight ? 'text-[#111827]' : 'text-dark-50')}>
                         {tariff.name}
                       </p>
                       {tariff.description && (
-                        <p className={cn('mt-2 text-[15px] leading-snug', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+                        <p className={cn('mt-2 text-[13px] leading-snug sm:text-[14px]', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
                           {tariff.description}
                         </p>
                       )}
                     </div>
                     {period && (
-                      <p className={cn('text-5xl font-black tracking-[-0.03em]', isLight ? 'text-[#8b5cf6]' : 'text-accent-300')}>
+                      <p
+                        className={cn(
+                          'shrink-0 text-right text-[3.15rem] font-black leading-[0.88] tracking-[-0.03em] sm:text-[3.4rem]',
+                          isLight ? 'text-[#8b5cf6]' : 'text-accent-300',
+                        )}
+                      >
                         {formatRubPrice(period.price_kopeks)}
-                        <span className={cn('ml-1 text-lg font-normal', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+                        <span
+                          className={cn(
+                            'ml-1 text-[0.52em] font-medium whitespace-nowrap',
+                            isLight ? 'text-[#6b7280]' : 'text-dark-400',
+                          )}
+                        >
                           /мес
                         </span>
                       </p>
                     )}
                   </div>
-                  <div className={cn('mt-4 flex flex-wrap gap-3 text-base', isLight ? 'text-[#6b7280]' : 'text-dark-300')}>
+                  <div
+                    className={cn(
+                      'mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[13px] sm:text-[14px]',
+                      isLight ? 'text-[#6b7280]' : 'text-dark-300',
+                    )}
+                  >
                     <span>{tariff.traffic_limit_gb === 0 ? '∞' : tariff.traffic_limit_gb} GB</span>
                     <span>{tariff.device_limit} устройств</span>
                   </div>
