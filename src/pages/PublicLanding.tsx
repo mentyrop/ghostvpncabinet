@@ -4,7 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
 import { landingApi } from '../api/landings';
 import type { AnimationConfig } from '@/components/ui/backgrounds/types';
-import { StaticBackgroundRenderer } from '../components/backgrounds/BackgroundRenderer';
+import Sparkles from '@/components/ui/backgrounds/sparkles';
 import { formatPrice } from '../utils/format';
 import { brandingApi, preloadLogo } from '@/api/branding';
 import { cn } from '../lib/utils';
@@ -144,17 +144,14 @@ export default function PublicLanding() {
   }
 
   return (
-    <div
-      className={cn(
-        'relative min-h-dvh overflow-x-hidden transition-colors',
-        isLight ? 'bg-[#f2f4f8]' : 'bg-[#020817]',
-      )}
-    >
-      <StaticBackgroundRenderer config={bgConfig} />
+    <div className="relative min-h-dvh overflow-x-hidden bg-transparent transition-colors">
+      <div className="pointer-events-none absolute inset-0">
+        <Sparkles settings={bgConfig.settings} />
+      </div>
       <div
         className={cn(
           'pointer-events-none absolute inset-0',
-          isLight ? 'bg-[#eceef3]/88' : 'bg-[#020817]/72',
+          isLight ? 'bg-[#eef2fa]/82' : 'bg-[#020817]/58',
         )}
       />
 
@@ -222,19 +219,21 @@ export default function PublicLanding() {
               : 'border-dark-700/60 bg-dark-900/70 shadow-black/20 hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.22)]',
           )}
         >
-          <div className="mb-2 inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-[11px] font-medium text-success-400">
-            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success-400" />
-            онлайн
-          </div>
-          <div
-            className={cn(
-              'mb-2 inline-flex rounded-full px-3 py-1 text-xs',
-              isLight
-                ? 'border border-[#d7c9fb] bg-[#f2edff] text-[#8b5cf6]'
-                : 'border border-accent-400/30 bg-accent-500/10 text-accent-300',
-            )}
-          >
-            {t('landing.tagline', 'Работает в России · Защита 24/7')}
+          <div className="mb-2 flex flex-col items-start gap-1.5">
+            <div className="inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-[11px] font-medium text-success-400">
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success-400" />
+              онлайн
+            </div>
+            <div
+              className={cn(
+                'inline-flex rounded-full px-3 py-1 text-xs',
+                isLight
+                  ? 'border border-[#d7c9fb] bg-[#f2edff] text-[#8b5cf6]'
+                  : 'border border-accent-400/30 bg-accent-500/10 text-accent-300',
+              )}
+            >
+              {t('landing.tagline', 'Работает в России · Защита 24/7')}
+            </div>
           </div>
           <h1 className={cn('mb-2 text-4xl font-bold leading-tight', isLight ? 'text-[#111827]' : 'text-dark-50')}>
             VPN который работает
