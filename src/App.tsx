@@ -224,6 +224,33 @@ function LegacySubscriptionRedirect() {
 
 function App() {
   useAnalyticsCounters();
+  const location = useLocation();
+
+  if (typeof window !== 'undefined') {
+    const host = window.location.hostname.toLowerCase();
+    const isRootLandingHost = host === 'ghostvpn.cc' || host === 'www.ghostvpn.cc';
+
+    if (isRootLandingHost) {
+      const path = location.pathname.toLowerCase();
+      const isAuthPath =
+        path === '/login' ||
+        path === '/register' ||
+        path === '/forgot-password' ||
+        path.startsWith('/auth/') ||
+        path === '/reset-password' ||
+        path === '/verify-email';
+
+      if (isAuthPath) {
+        window.location.replace('https://app.ghostvpn.cc/login');
+        return <PageLoader variant="dark" />;
+      }
+
+      if (path !== '/' && !path.startsWith('/landing/')) {
+        window.location.replace('https://ghostvpn.cc/');
+        return <PageLoader variant="dark" />;
+      }
+    }
+  }
 
   return (
     <>
