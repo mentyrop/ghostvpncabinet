@@ -83,9 +83,8 @@ export default function PublicLanding() {
   });
 
   useEffect(() => {
-    if (!config) return;
-    if (config.meta_title) document.title = config.meta_title;
-  }, [config]);
+    document.title = 'GhostVPN — Надёжный VPN';
+  }, []);
 
   const tariffs = useMemo(() => {
     if (!config) return [];
@@ -125,6 +124,25 @@ export default function PublicLanding() {
     return () => mediaQuery.removeEventListener('change', handler);
   }, []);
 
+  useEffect(() => {
+    const logo = branding ? brandingApi.getLogoUrl(branding) : null;
+    if (!logo || typeof document === 'undefined') return;
+
+    const applyFavicon = (rel: string) => {
+      let link = document.querySelector(`link[rel="${rel}"]`) as HTMLLinkElement | null;
+      if (!link) {
+        link = document.createElement('link');
+        link.rel = rel;
+        document.head.appendChild(link);
+      }
+      link.href = logo;
+    };
+
+    applyFavicon('icon');
+    applyFavicon('shortcut icon');
+    applyFavicon('apple-touch-icon');
+  }, [branding]);
+
   if (isLoading) {
     return (
       <div className="flex min-h-dvh items-center justify-center bg-dark-950">
@@ -144,7 +162,12 @@ export default function PublicLanding() {
   }
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-transparent transition-colors">
+    <div
+      className={cn(
+        'relative min-h-dvh overflow-x-hidden transition-colors',
+        isLight ? 'bg-[#eef2fa]' : 'bg-[#020817]',
+      )}
+    >
       <div className="pointer-events-none absolute inset-0">
         <Sparkles settings={bgConfig.settings} />
       </div>
