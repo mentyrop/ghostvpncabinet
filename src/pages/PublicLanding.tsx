@@ -358,6 +358,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             <div className="space-y-3">
               {tariffs.slice(0, 3).map(({ tariff, period }) => {
                 const isPopular = tariff.name.toLowerCase().includes('pro');
+                const isStart = tariff.name.toLowerCase().includes('start');
                 return (
                   <div
                     key={tariff.id}
@@ -365,7 +366,12 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                       'relative rounded-2xl border p-4 transition-all',
                       isPopular && isLight && 'border-[#c8b1ff] bg-[#f3eefc] shadow-[0_10px_26px_rgba(139,92,246,0.16)]',
                       isPopular && !isLight && 'border-[#3ba9db] bg-dark-800/80 shadow-[0_0_24px_rgba(56,189,248,0.18)]',
+                      isStart &&
+                        (isLight
+                          ? 'border-[#d0d5de] bg-[#eef0f5]'
+                          : 'border-dark-700 bg-dark-800/60'),
                       !isPopular &&
+                        !isStart &&
                         (isLight
                           ? 'border-[#d0d5de] bg-[#eef0f5] hover:border-[#bca4ff]'
                           : 'border-dark-700 bg-dark-800/60 hover:border-accent-400/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.16)]'),
@@ -397,7 +403,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                     {period && (
                       <p
                         className={cn(
-                          'shrink-0 text-right text-[3.15rem] font-black leading-[0.88] tracking-[-0.03em] sm:text-[3.4rem]',
+                          'shrink-0 text-right text-[2.75rem] font-black leading-[0.9] tracking-[-0.03em] sm:text-[3rem]',
                           isLight ? 'text-[#8b5cf6]' : 'text-accent-300',
                         )}
                       >
