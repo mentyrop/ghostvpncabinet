@@ -196,17 +196,17 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
         )}
       />
 
-      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-16 pt-4 sm:px-6">
         <header
           className={cn(
-            'mb-6 flex items-center justify-between border-b pb-4',
+            'mb-5 flex items-center justify-between border-b pb-3',
             isLight ? 'border-[#d6dae5]' : 'border-dark-700/70',
           )}
         >
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                'flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border shadow-[0_8px_24px_rgba(15,23,42,0.18)]',
+                'flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border shadow-[0_8px_24px_rgba(15,23,42,0.18)]',
                 isLight
                   ? 'border-[#d6d9e4] bg-[#f8f9fe] shadow-[0_12px_32px_rgba(139,92,246,0.16)]'
                   : 'border-dark-700 bg-dark-900/90',
@@ -222,7 +222,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             </div>
             <div
               className={cn(
-                'text-[1.75rem] font-bold leading-none tracking-[-0.03em] sm:text-[2rem]',
+                'text-[1.55rem] font-bold leading-none tracking-[-0.03em] sm:text-[1.8rem]',
                 isLight ? 'text-[#111827]' : 'text-dark-50',
               )}
             >
