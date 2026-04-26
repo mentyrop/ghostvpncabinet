@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useParams, Link } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
 import { useTranslation } from 'react-i18next';
@@ -7,15 +7,18 @@ import type { AnimationConfig } from '@/components/ui/backgrounds/types';
 import { StaticBackgroundRenderer } from '../components/backgrounds/BackgroundRenderer';
 import { formatPrice } from '../utils/format';
 import { brandingApi, preloadLogo } from '@/api/branding';
-import { useTheme } from '@/hooks/useTheme';
+import { cn } from '../lib/utils';
 
 const SPOTLIGHT_DARK_FALLBACK: AnimationConfig = {
   enabled: true,
   type: 'spotlight',
-  settings: {},
-  opacity: 1,
+  settings: {
+    spotlightColor: '#8b5cf6',
+    spotlightSize: 520,
+  },
+  opacity: 0.9,
   blur: 0,
-  reducedOnMobile: true,
+  reducedOnMobile: false,
 };
 
 function useTelegramLink() {
@@ -46,7 +49,7 @@ export default function PublicLanding() {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const telegramLink = useTelegramLink();
-  const { isDark, toggleTheme, canToggle } = useTheme();
+  const [isLight, setIsLight] = useState(false);
 
   const { data: config, isLoading, error } = useQuery({
     queryKey: ['public-landing-page', slug, i18n.language],
@@ -78,8 +81,16 @@ export default function PublicLanding() {
     });
   }, [config]);
 
-  // Keep this landing always on spotlight + dark style
-  const bgConfig = SPOTLIGHT_DARK_FALLBACK;
+  const bgConfig: AnimationConfig = isLight
+    ? {
+        ...SPOTLIGHT_DARK_FALLBACK,
+        settings: {
+          spotlightColor: '#a78bfa',
+          spotlightSize: 460,
+        },
+        opacity: 0.2,
+      }
+    : SPOTLIGHT_DARK_FALLBACK;
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
   const logoLetter = branding?.logo_letter || 'G';
   const appName = branding?.name || 'GhostVPN';
@@ -103,56 +114,128 @@ export default function PublicLanding() {
   }
 
   return (
-    <div className="relative min-h-dvh overflow-x-hidden bg-dark-950">
+    <div
+      className={cn(
+        'relative min-h-dvh overflow-x-hidden transition-colors',
+        isLight ? 'bg-[#eceef3]' : 'bg-dark-950',
+      )}
+    >
       <StaticBackgroundRenderer config={bgConfig} />
 
       <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
-        <header className="mb-6 flex items-center justify-between gap-3">
-          <div className="flex items-center gap-3 rounded-xl border border-dark-700/70 bg-dark-900/70 px-3 py-2 backdrop-blur">
-            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-dark-800">
+        <header
+          className={cn(
+            'mb-6 flex items-center justify-between border-b pb-4',
+            isLight ? 'border-[#d6dae5]' : 'border-dark-700/70',
+          )}
+        >
+          <div className="flex items-center gap-3">
+            <div
+              className={cn(
+                'flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border',
+                isLight ? 'border-[#cfd4df] bg-[#f8f9fb]' : 'border-dark-700 bg-dark-900/80',
+              )}
+            >
               {logoUrl ? (
                 <img src={logoUrl} alt={appName} className="h-full w-full object-cover" />
               ) : (
-                <span className="text-sm font-bold text-dark-100">{logoLetter}</span>
+                <span className={cn('text-sm font-bold', isLight ? 'text-[#121826]' : 'text-dark-100')}>
+                  {logoLetter}
+                </span>
               )}
             </div>
-            <div className="text-2xl font-semibold text-dark-100">{appName}</div>
+            <div className={cn('text-2xl font-semibold', isLight ? 'text-[#111827]' : 'text-dark-100')}>
+              {appName}
+            </div>
           </div>
 
-          <button
-            type="button"
-            onClick={toggleTheme}
-            disabled={!canToggle}
-            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-dark-600 bg-dark-900/80 text-dark-100 transition-colors hover:border-accent-400/70 hover:bg-dark-800 disabled:cursor-not-allowed disabled:opacity-40"
-            title={t('landing.toggleTheme', 'Переключить тему')}
-          >
-            {isDark ? '☀️' : '🌙'}
-          </button>
+          <div className="flex items-center gap-3">
+            <Link
+              to="/login"
+              className={cn(
+                'text-sm font-medium transition-colors',
+                isLight ? 'text-[#4b5563] hover:text-[#111827]' : 'text-dark-300 hover:text-dark-100',
+              )}
+            >
+              Кабинет
+            </Link>
+            <button
+              type="button"
+              onClick={() => setIsLight((v) => !v)}
+              className={cn(
+                'inline-flex h-10 w-10 items-center justify-center rounded-xl border transition-colors',
+                isLight
+                  ? 'border-[#bfa7ff] bg-[#f3eefc] hover:bg-[#ede6fb]'
+                  : 'border-dark-600 bg-dark-900/80 hover:border-accent-400/70 hover:bg-dark-800',
+              )}
+              title={t('landing.toggleTheme', 'Переключить тему')}
+            >
+              {isLight ? '🌙' : '☀️'}
+            </button>
+          </div>
         </header>
 
-        <section className="mx-auto mb-8 max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 shadow-xl shadow-black/20 backdrop-blur transition-all hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.22)]">
-          <div className="mb-2 inline-flex rounded-full border border-accent-400/30 bg-accent-500/10 px-3 py-1 text-xs text-accent-300">
+        <section
+          className={cn(
+            'mx-auto mb-8 max-w-xl rounded-3xl border p-5 shadow-xl backdrop-blur transition-all',
+            isLight
+              ? 'border-[#d4d8e3] bg-[#f8f9fc]/95 shadow-[0_6px_28px_rgba(15,23,42,0.08)] hover:border-[#bca4ff]'
+              : 'border-dark-700/60 bg-dark-900/70 shadow-black/20 hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.22)]',
+          )}
+        >
+          <div className="mb-2 inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-[11px] font-medium text-success-400">
+            <span className="h-1.5 w-1.5 rounded-full bg-success-400" />
+            онлайн
+          </div>
+          <div
+            className={cn(
+              'mb-2 inline-flex rounded-full px-3 py-1 text-xs',
+              isLight
+                ? 'border border-[#d7c9fb] bg-[#f2edff] text-[#8b5cf6]'
+                : 'border border-accent-400/30 bg-accent-500/10 text-accent-300',
+            )}
+          >
             {t('landing.tagline', 'Работает в России · Защита 24/7')}
           </div>
-          <h1 className="mb-2 text-4xl font-bold leading-tight text-dark-50">
+          <h1 className={cn('mb-2 text-4xl font-bold leading-tight', isLight ? 'text-[#111827]' : 'text-dark-50')}>
             VPN который работает
           </h1>
-          <p className="mb-4 text-sm text-dark-200">
+          <p className={cn('mb-4 text-sm', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
             Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
             один клик.
           </p>
 
-          <div className="mb-4 flex flex-wrap gap-2 text-xs text-dark-200">
-            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+          <div className={cn('mb-4 flex flex-wrap gap-2 text-xs', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+            <span
+              className={cn(
+                'rounded-full px-3 py-1',
+                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
+              )}
+            >
               ⚡ Быстрое подключение
             </span>
-            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+            <span
+              className={cn(
+                'rounded-full px-3 py-1',
+                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
+              )}
+            >
               🔄 Без ручных настроек
             </span>
-            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+            <span
+              className={cn(
+                'rounded-full px-3 py-1',
+                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
+              )}
+            >
               🇷🇺 Рунет работает
             </span>
-            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+            <span
+              className={cn(
+                'rounded-full px-3 py-1',
+                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
+              )}
+            >
               💰 от 100 ₽/мес
             </span>
           </div>
@@ -163,7 +246,7 @@ export default function PublicLanding() {
                 href={telegramLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-400"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#7c3aed] px-4 py-2.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-95"
               >
                 <span aria-hidden="true">✈️</span>
                 {t('landing.startTelegram', 'Начать через Telegram')}
@@ -171,7 +254,12 @@ export default function PublicLanding() {
             )}
             <Link
               to="/login"
-              className="rounded-xl border border-dark-700 bg-dark-800 px-4 py-2.5 text-center text-sm font-semibold text-dark-100 transition-colors hover:border-accent-400/70 hover:bg-dark-700"
+              className={cn(
+                'rounded-xl border px-4 py-2.5 text-center text-sm font-semibold transition-colors',
+                isLight
+                  ? 'border-[#cfd4df] bg-[#eceef3] text-[#111827] hover:border-[#bca4ff]'
+                  : 'border-dark-700 bg-dark-800 text-dark-100 hover:border-accent-400/70 hover:bg-dark-700',
+              )}
             >
               {t('landing.siteLogin', 'Личный кабинет')}
             </Link>
@@ -179,15 +267,27 @@ export default function PublicLanding() {
         </section>
 
         {tariffs.length > 0 && (
-          <section className="mx-auto mb-8 max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 backdrop-blur transition-all hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.18)]">
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-dark-400">
+          <section
+            className={cn(
+              'mx-auto mb-8 max-w-xl rounded-3xl border p-5 backdrop-blur transition-all',
+              isLight
+                ? 'border-[#d4d8e3] bg-[#f8f9fc]/95 hover:border-[#bca4ff]'
+                : 'border-dark-700/60 bg-dark-900/70 hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.18)]',
+            )}
+          >
+            <h2 className={cn('mb-4 text-xs font-semibold uppercase tracking-wide', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
               {t('landing.tariffs', 'Тарифы')}
             </h2>
             <div className="space-y-3">
               {tariffs.slice(0, 3).map(({ tariff, period }) => (
                 <div
                   key={tariff.id}
-                  className="relative rounded-2xl border border-dark-700 bg-dark-800/60 p-4 transition-all hover:border-accent-400/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.16)]"
+                  className={cn(
+                    'relative rounded-2xl border p-4 transition-all',
+                    isLight
+                      ? 'border-[#d0d5de] bg-[#eef0f5] hover:border-[#bca4ff]'
+                      : 'border-dark-700 bg-dark-800/60 hover:border-accent-400/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.16)]',
+                  )}
                 >
                   {tariff.name.toLowerCase().includes('pro') && (
                     <span className="absolute -top-2 left-4 rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
@@ -196,19 +296,25 @@ export default function PublicLanding() {
                   )}
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className="text-sm font-semibold text-dark-100">{tariff.name}</p>
+                      <p className={cn('text-sm font-semibold', isLight ? 'text-[#111827]' : 'text-dark-100')}>
+                        {tariff.name}
+                      </p>
                       {tariff.description && (
-                        <p className="mt-1 text-xs text-dark-400">{tariff.description}</p>
+                        <p className={cn('mt-1 text-xs', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+                          {tariff.description}
+                        </p>
                       )}
                     </div>
                     {period && (
-                      <p className="text-lg font-bold text-accent-300">
+                      <p className={cn('text-lg font-bold', isLight ? 'text-[#8b5cf6]' : 'text-accent-300')}>
                         {formatPrice(period.price_kopeks)}
-                        <span className="ml-1 text-xs font-normal text-dark-400">/мес</span>
+                        <span className={cn('ml-1 text-xs font-normal', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+                          /мес
+                        </span>
                       </p>
                     )}
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-3 text-xs text-dark-300">
+                  <div className={cn('mt-3 flex flex-wrap gap-3 text-xs', isLight ? 'text-[#6b7280]' : 'text-dark-300')}>
                     <span>{tariff.traffic_limit_gb === 0 ? '∞' : tariff.traffic_limit_gb} GB</span>
                     <span>{tariff.device_limit} {t('landing.devices', 'устройства')}</span>
                   </div>
@@ -218,21 +324,29 @@ export default function PublicLanding() {
           </section>
         )}
 
-        <section className="mx-auto max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 backdrop-blur transition-all hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.18)]">
+        <section
+          className={cn(
+            'mx-auto max-w-xl rounded-3xl border p-5 backdrop-blur transition-all',
+            isLight
+              ? 'border-[#d4d8e3] bg-[#f8f9fc]/95 hover:border-[#bca4ff]'
+              : 'border-dark-700/60 bg-dark-900/70 hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.18)]',
+          )}
+        >
           <div className="mb-3 flex items-center gap-2">
-            <h2 className="text-xs font-semibold uppercase tracking-wide text-dark-400">
-              Почему мы
+            <h2 className={cn('text-xs font-semibold uppercase tracking-wide', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+              ПОЧЕМУ GHOSTVPN
             </h2>
-            <span className="inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-2 py-0.5 text-[10px] text-success-400">
-              <span className="h-1.5 w-1.5 rounded-full bg-success-400" />
-              онлайн
-            </span>
           </div>
           <div className="space-y-3">
             {WHY_US_ITEMS.map((item) => (
               <div
                 key={item.text}
-                className="rounded-2xl border border-dark-700 bg-dark-800/60 p-3 text-sm text-dark-200 transition-all hover:border-accent-400/70 hover:bg-dark-800"
+                className={cn(
+                  'rounded-2xl border p-3 text-sm transition-all',
+                  isLight
+                    ? 'border-[#d0d5de] bg-[#eef0f5] text-[#111827] hover:border-[#bca4ff]'
+                    : 'border-dark-700 bg-dark-800/60 text-dark-200 hover:border-accent-400/70 hover:bg-dark-800',
+                )}
               >
                 <span className="mr-2">{item.emoji}</span>
                 {item.text}
