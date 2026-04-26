@@ -283,21 +283,21 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
               Работает в России · Защита 24/7
             </div>
           </div>
-          <h1 className={cn('mb-2 text-[2.35rem] font-black leading-[0.96] tracking-[-0.02em] sm:text-6xl', isLight ? 'text-[#111827]' : 'text-dark-50')}>
+          <h1 className={cn('mb-2 text-[2.35rem] font-black leading-[0.96] tracking-[-0.02em] sm:text-[3.35rem]', isLight ? 'text-[#111827]' : 'text-dark-50')}>
             VPN который{' '}
             <span className={isLight ? 'text-[#8b5cf6]' : 'text-[#a78bfa]'}>работает</span>
           </h1>
-          <p className={cn('mb-4 text-[15px] leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
+          <p className={cn('mb-4 text-base leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
             Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
             один клик.
           </p>
 
-          <div className={cn('mb-5 grid grid-cols-2 gap-x-2 gap-y-3 text-[13px] leading-tight sm:text-[14px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+          <div className={cn('mb-5 grid grid-cols-2 gap-x-2 gap-y-3 text-[14px] leading-tight sm:text-[15px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
             {HERO_BENEFITS.map((item) => (
               <span
                 key={item}
                 className={cn(
-                  'inline-flex min-h-[40px] w-full items-center justify-center rounded-full px-2.5 py-1.5 text-center',
+                  'inline-flex min-h-[44px] w-full items-center justify-center rounded-full px-3 py-2 text-center',
                   isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
                 )}
               >
