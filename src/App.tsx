@@ -62,6 +62,7 @@ const GiftResult = lazyWithRetry(() => import('./pages/GiftResult'));
 const Connection = lazyWithRetry(() => import('./pages/Connection'));
 const ConnectionQR = lazyWithRetry(() => import('./pages/ConnectionQR'));
 const QuickPurchase = lazyWithRetry(() => import('./pages/QuickPurchase'));
+const PublicLanding = lazyWithRetry(() => import('./pages/PublicLanding'));
 const PurchaseSuccess = lazyWithRetry(() => import('./pages/PurchaseSuccess'));
 const RenewSubscription = lazyWithRetry(() => import('./pages/RenewSubscription'));
 const AutoLogin = lazyWithRetry(() => import('./pages/AutoLogin'));
@@ -262,6 +263,16 @@ function App() {
             <ErrorBoundary level="app">
               <LazyPage>
                 <QuickPurchase />
+              </LazyPage>
+            </ErrorBoundary>
+          }
+        />
+        <Route
+          path="/landing/:slug"
+          element={
+            <ErrorBoundary level="app">
+              <LazyPage>
+                <PublicLanding />
               </LazyPage>
             </ErrorBoundary>
           }
