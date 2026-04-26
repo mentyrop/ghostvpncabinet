@@ -9,21 +9,30 @@ import { formatPrice } from '../utils/format';
 import { brandingApi, preloadLogo } from '@/api/branding';
 import { cn } from '../lib/utils';
 
-const SPOTLIGHT_DARK_FALLBACK: AnimationConfig = {
+const SPARKLES_BASE: AnimationConfig = {
   enabled: true,
-  type: 'spotlight',
+  type: 'sparkles',
   settings: {
-    spotlightColor: '#8b5cf6',
-    spotlightSize: 520,
+    particleDensity: 80,
+    particleColor: '#ffffff',
+    minSize: 0.4,
+    maxSize: 1.4,
+    speed: 0.6,
   },
-  opacity: 0.9,
+  opacity: 1,
   blur: 0,
-  reducedOnMobile: false,
+  reducedOnMobile: true,
 };
 
 function useTelegramLink() {
   const username = (import.meta.env.VITE_TELEGRAM_BOT_USERNAME || '').replace('@', '');
   return username ? `https://t.me/${username}` : null;
+}
+
+function useSupportLink(telegramLink: string | null) {
+  const supportUrl = (import.meta.env.VITE_SUPPORT_URL || '').trim();
+  if (supportUrl) return supportUrl;
+  return telegramLink;
 }
 
 const WHY_US_ITEMS = [
@@ -49,7 +58,12 @@ export default function PublicLanding() {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const telegramLink = useTelegramLink();
-  const [isLight, setIsLight] = useState(false);
+  const supportLink = useSupportLink(telegramLink);
+  const telegramBotUsername = (import.meta.env.VITE_TELEGRAM_BOT_USERNAME || '').replace('@', '');
+  const [isLight, setIsLight] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    return window.matchMedia('(prefers-color-scheme: light)').matches;
+  });
 
   const { data: config, isLoading, error } = useQuery({
     queryKey: ['public-landing-page', slug, i18n.language],
@@ -83,17 +97,33 @@ export default function PublicLanding() {
 
   const bgConfig: AnimationConfig = isLight
     ? {
-        ...SPOTLIGHT_DARK_FALLBACK,
+        ...SPARKLES_BASE,
         settings: {
-          spotlightColor: '#a78bfa',
-          spotlightSize: 460,
+          ...SPARKLES_BASE.settings,
+          particleColor: '#a78bfa',
         },
-        opacity: 0.2,
+        opacity: 0.95,
       }
-    : SPOTLIGHT_DARK_FALLBACK;
+    : {
+        ...SPARKLES_BASE,
+        settings: {
+          ...SPARKLES_BASE.settings,
+          particleColor: '#ffffff',
+        },
+      };
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
   const logoLetter = branding?.logo_letter || 'G';
   const appName = branding?.name || 'GhostVPN';
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const mediaQuery = window.matchMedia('(prefers-color-scheme: light)');
+    const handler = (event: MediaQueryListEvent) => {
+      setIsLight(event.matches);
+    };
+    mediaQuery.addEventListener('change', handler);
+    return () => mediaQuery.removeEventListener('change', handler);
+  }, []);
 
   if (isLoading) {
     return (
@@ -170,7 +200,10 @@ export default function PublicLanding() {
               )}
               title={t('landing.toggleTheme', 'Переключить тему')}
             >
-              {isLight ? '🌙' : '☀️'}
+              <span className="relative inline-flex h-5 w-5 items-center justify-center">
+                <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-yellow-400/70" />
+                <span className="relative text-sm">{isLight ? '🌙' : '☀️'}</span>
+              </span>
             </button>
           </div>
         </header>
@@ -246,19 +279,25 @@ export default function PublicLanding() {
                 href={telegramLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#7c3aed] px-4 py-2.5 text-center text-sm font-semibold text-white transition-opacity hover:opacity-95"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#7c3aed] px-4 py-2.5 text-center text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(139,92,246,0.35)]"
               >
-                <span aria-hidden="true">✈️</span>
+                <svg
+                  aria-hidden="true"
+                  viewBox="0 0 24 24"
+                  className="h-4 w-4 fill-current"
+                >
+                  <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0Zm5.894 8.216-1.97 9.292c-.149.658-.54.82-1.092.51l-3.022-2.228-1.458 1.403c-.161.161-.296.296-.607.296l.217-3.064 5.58-5.042c.243-.217-.053-.338-.376-.121l-6.896 4.34-2.968-.928c-.645-.202-.658-.645.135-.954l11.605-4.473c.538-.196 1.007.128.852.969Z" />
+                </svg>
                 {t('landing.startTelegram', 'Начать через Telegram')}
               </a>
             )}
             <Link
               to="/login"
               className={cn(
-                'rounded-xl border px-4 py-2.5 text-center text-sm font-semibold transition-colors',
+                'rounded-xl border px-4 py-2.5 text-center text-sm font-semibold transition-all hover:-translate-y-0.5',
                 isLight
-                  ? 'border-[#cfd4df] bg-[#eceef3] text-[#111827] hover:border-[#bca4ff]'
-                  : 'border-dark-700 bg-dark-800 text-dark-100 hover:border-accent-400/70 hover:bg-dark-700',
+                  ? 'border-[#cfd4df] bg-[#eceef3] text-[#111827] hover:border-[#bca4ff] hover:shadow-[0_8px_22px_rgba(167,139,250,0.20)]'
+                  : 'border-dark-700 bg-dark-800 text-dark-100 hover:border-accent-400/70 hover:bg-dark-700 hover:shadow-[0_8px_22px_rgba(56,189,248,0.18)]',
               )}
             >
               {t('landing.siteLogin', 'Личный кабинет')}
@@ -354,6 +393,58 @@ export default function PublicLanding() {
             ))}
           </div>
         </section>
+
+        <footer className="mx-auto mt-7 max-w-xl pb-2">
+          <div className="mb-3 flex flex-wrap items-center justify-center gap-2">
+            {telegramLink && (
+              <a
+                href={telegramLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors',
+                  isLight
+                    ? 'border-[#cfd4df] bg-[#f3f4f8] text-[#4b5563] hover:border-[#bca4ff]'
+                    : 'border-dark-600 bg-dark-800/70 text-dark-300 hover:border-accent-400/70',
+                )}
+              >
+                <span>🤖</span>
+                <span>{telegramBotUsername ? `@${telegramBotUsername}` : 'Telegram'}</span>
+              </a>
+            )}
+            <Link
+              to="/login"
+              className={cn(
+                'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors',
+                isLight
+                  ? 'border-[#cfd4df] bg-[#f3f4f8] text-[#4b5563] hover:border-[#bca4ff]'
+                  : 'border-dark-600 bg-dark-800/70 text-dark-300 hover:border-accent-400/70',
+              )}
+            >
+              <span>💻</span>
+              <span>Личный кабинет</span>
+            </Link>
+            {supportLink && (
+              <a
+                href={supportLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={cn(
+                  'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors',
+                  isLight
+                    ? 'border-[#cfd4df] bg-[#f3f4f8] text-[#4b5563] hover:border-[#bca4ff]'
+                    : 'border-dark-600 bg-dark-800/70 text-dark-300 hover:border-accent-400/70',
+                )}
+              >
+                <span>💬</span>
+                <span>Поддержка</span>
+              </a>
+            )}
+          </div>
+          <p className={cn('text-center text-xs', isLight ? 'text-[#6b7280]' : 'text-dark-500')}>
+            © {new Date().getFullYear()} {appName.toLowerCase().includes('ghost') ? 'GhostVPN' : appName}
+          </p>
+        </footer>
       </div>
     </div>
   );
