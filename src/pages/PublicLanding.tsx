@@ -21,7 +21,7 @@ const SPARKLES_BASE: AnimationConfig = {
   },
   opacity: 1,
   blur: 0,
-  reducedOnMobile: true,
+  reducedOnMobile: false,
 };
 
 function useTelegramLink() {
@@ -30,7 +30,7 @@ function useTelegramLink() {
 }
 
 function useSupportLink(telegramLink: string | null) {
-  const supportUrl = (import.meta.env.VITE_SUPPORT_URL || '').trim();
+  const supportUrl = 'https://app.ghostvpn.cc/support';
   if (supportUrl) return supportUrl;
   return telegramLink;
 }
@@ -147,12 +147,18 @@ export default function PublicLanding() {
     <div
       className={cn(
         'relative min-h-dvh overflow-x-hidden transition-colors',
-        isLight ? 'bg-[#eceef3]' : 'bg-dark-950',
+        isLight ? 'bg-[#f2f4f8]' : 'bg-[#020817]',
       )}
     >
       <StaticBackgroundRenderer config={bgConfig} />
+      <div
+        className={cn(
+          'pointer-events-none absolute inset-0',
+          isLight ? 'bg-[#eceef3]/88' : 'bg-[#020817]/72',
+        )}
+      />
 
-      <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
+      <div className="relative z-10 mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
         <header
           className={cn(
             'mb-6 flex items-center justify-between border-b pb-4',
@@ -217,7 +223,7 @@ export default function PublicLanding() {
           )}
         >
           <div className="mb-2 inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-[11px] font-medium text-success-400">
-            <span className="h-1.5 w-1.5 rounded-full bg-success-400" />
+            <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success-400" />
             онлайн
           </div>
           <div
@@ -408,7 +414,7 @@ export default function PublicLanding() {
                     : 'border-dark-600 bg-dark-800/70 text-dark-300 hover:border-accent-400/70',
                 )}
               >
-                <span>🤖</span>
+                <span>👻</span>
                 <span>{telegramBotUsername ? `@${telegramBotUsername}` : 'Telegram'}</span>
               </a>
             )}
