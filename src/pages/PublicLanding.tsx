@@ -1,11 +1,9 @@
 import { useEffect, useMemo, useState } from 'react';
 import { useParams } from 'react-router';
 import { useQuery } from '@tanstack/react-query';
-import { useTranslation } from 'react-i18next';
 import { landingApi } from '../api/landings';
 import type { AnimationConfig } from '@/components/ui/backgrounds/types';
 import Sparkles from '@/components/ui/backgrounds/sparkles';
-import { formatPrice } from '../utils/format';
 import { brandingApi, preloadLogo } from '@/api/branding';
 import { cn } from '../lib/utils';
 
@@ -65,10 +63,14 @@ const HERO_BENEFITS = [
   '💰 от 100 ₽/мес',
 ];
 
+function formatRubPrice(kopeks: number) {
+  const rub = Math.round(kopeks / 100);
+  return `${rub.toLocaleString('ru-RU')} ₽`;
+}
+
 export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = {}) {
   const { slug: slugFromRoute } = useParams<{ slug: string }>();
   const slug = forcedSlug ?? slugFromRoute ?? 'main';
-  const { t, i18n } = useTranslation();
   const telegramLink = useTelegramLink();
   const supportLink = useSupportLink(telegramLink);
   const telegramBotUsername = (import.meta.env.VITE_TELEGRAM_BOT_USERNAME || '').replace('@', '');
@@ -78,8 +80,8 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
   });
 
   const { data: config, isLoading, error } = useQuery({
-    queryKey: ['public-landing-page', slug, i18n.language],
-    queryFn: () => landingApi.getConfig(slug, i18n.language),
+    queryKey: ['public-landing-page', slug, 'ru'],
+    queryFn: () => landingApi.getConfig(slug, 'ru'),
     enabled: true,
     staleTime: 60_000,
   });
@@ -171,7 +173,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
     return (
       <div className="flex min-h-dvh items-center justify-center bg-dark-950 p-4 text-center">
         <p className="text-sm text-dark-300">
-          {t('landing.notFound', 'Лендинг не найден или отключен')}
+          Лендинг не найден или отключен
         </p>
       </div>
     );
@@ -247,7 +249,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                   ? 'border-[#bfa7ff] bg-[#f3eefc] hover:bg-[#ede6fb]'
                   : 'border-dark-600 bg-dark-900/80 hover:border-accent-400/70 hover:bg-dark-800',
               )}
-              title={t('landing.toggleTheme', 'Переключить тему')}
+              title="Переключить тему"
             >
               <span className="relative inline-flex h-5 w-5 items-center justify-center">
                 <span className="absolute inline-flex h-2.5 w-2.5 animate-ping rounded-full bg-yellow-400/70" />
@@ -278,23 +280,26 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                   : 'border border-accent-400/30 bg-accent-500/10 text-accent-300',
               )}
             >
-              {t('landing.tagline', 'Работает в России · Защита 24/7')}
+              Работает в России · Защита 24/7
             </div>
           </div>
-          <h1 className={cn('mb-2 text-4xl font-bold leading-tight', isLight ? 'text-[#111827]' : 'text-dark-50')}>
-            VPN который работает
+          <h1 className={cn('mb-2 text-[2.75rem] font-black leading-[0.95] tracking-[-0.02em] sm:text-6xl', isLight ? 'text-[#111827]' : 'text-dark-50')}>
+            VPN который
+            <br />
+            <span className={isLight ? 'text-[#8b5cf6]' : 'text-[#a78bfa]'}>просто работает</span>
           </h1>
-          <p className={cn('mb-4 text-sm', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
+          <p className={cn('mb-5 text-base leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
             Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
             один клик.
           </p>
 
-          <div className={cn('mb-4 grid grid-cols-2 gap-2 text-xs', isLight ? 'text-[#334155]' : 'text-dark-200')}>
-            {HERO_BENEFITS.map((item) => (
+          <div className={cn('mb-5 grid grid-cols-2 gap-2 text-[15px] leading-tight', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+            {HERO_BENEFITS.map((item, idx) => (
               <span
                 key={item}
                 className={cn(
-                  'rounded-full px-3 py-1 text-center',
+                  'rounded-full px-3 py-2 text-center',
+                  idx < 2 && 'col-span-2',
                   isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
                 )}
               >
@@ -323,7 +328,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                 >
                   <path d="M12 0C5.374 0 0 5.373 0 12s5.374 12 12 12 12-5.373 12-12S18.626 0 12 0Zm5.894 8.216-1.97 9.292c-.149.658-.54.82-1.092.51l-3.022-2.228-1.458 1.403c-.161.161-.296.296-.607.296l.217-3.064 5.58-5.042c.243-.217-.053-.338-.376-.121l-6.896 4.34-2.968-.928c-.645-.202-.658-.645.135-.954l11.605-4.473c.538-.196 1.007.128.852.969Z" />
                 </svg>
-                {t('landing.startTelegram', 'Начать через Telegram')}
+                Начать через Telegram
               </a>
             )}
             <a
@@ -335,7 +340,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                   : 'border-dark-700 bg-dark-800 text-dark-100 hover:border-accent-400/70 hover:bg-dark-700 hover:shadow-[0_8px_22px_rgba(56,189,248,0.18)]',
               )}
             >
-              {t('landing.siteLogin', 'Личный кабинет')}
+              Личный кабинет
             </a>
           </div>
         </section>
@@ -350,7 +355,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             )}
           >
             <h2 className={cn('mb-4 text-xs font-semibold uppercase tracking-wide', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
-              {t('landing.tariffs', 'Тарифы')}
+              ТАРИФЫ
             </h2>
             <div className="space-y-3">
               {tariffs.slice(0, 3).map(({ tariff, period }) => {
@@ -382,27 +387,27 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                     )}
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <p className={cn('text-sm font-semibold', isLight ? 'text-[#111827]' : 'text-dark-100')}>
+                      <p className={cn('text-[2rem] font-black leading-none', isLight ? 'text-[#111827]' : 'text-dark-50')}>
                         {tariff.name}
                       </p>
                       {tariff.description && (
-                        <p className={cn('mt-1 text-xs', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+                        <p className={cn('mt-2 text-[15px] leading-snug', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
                           {tariff.description}
                         </p>
                       )}
                     </div>
                     {period && (
-                      <p className={cn('text-lg font-bold', isLight ? 'text-[#8b5cf6]' : 'text-accent-300')}>
-                        {formatPrice(period.price_kopeks)}
-                        <span className={cn('ml-1 text-xs font-normal', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
+                      <p className={cn('text-5xl font-black tracking-[-0.03em]', isLight ? 'text-[#8b5cf6]' : 'text-accent-300')}>
+                        {formatRubPrice(period.price_kopeks)}
+                        <span className={cn('ml-1 text-lg font-normal', isLight ? 'text-[#6b7280]' : 'text-dark-400')}>
                           /мес
                         </span>
                       </p>
                     )}
                   </div>
-                  <div className={cn('mt-3 flex flex-wrap gap-3 text-xs', isLight ? 'text-[#6b7280]' : 'text-dark-300')}>
+                  <div className={cn('mt-4 flex flex-wrap gap-3 text-base', isLight ? 'text-[#6b7280]' : 'text-dark-300')}>
                     <span>{tariff.traffic_limit_gb === 0 ? '∞' : tariff.traffic_limit_gb} GB</span>
-                    <span>{tariff.device_limit} {t('landing.devices', 'устройства')}</span>
+                    <span>{tariff.device_limit} устройств</span>
                   </div>
                 </div>
                 );
