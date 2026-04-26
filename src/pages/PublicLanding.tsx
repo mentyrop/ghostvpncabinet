@@ -284,22 +284,20 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             </div>
           </div>
           <h1 className={cn('mb-2 text-[2.75rem] font-black leading-[0.95] tracking-[-0.02em] sm:text-6xl', isLight ? 'text-[#111827]' : 'text-dark-50')}>
-            VPN который
-            <br />
-            <span className={isLight ? 'text-[#8b5cf6]' : 'text-[#a78bfa]'}>просто работает</span>
+            VPN который{' '}
+            <span className={isLight ? 'text-[#8b5cf6]' : 'text-[#a78bfa]'}>работает</span>
           </h1>
           <p className={cn('mb-5 text-base leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
             Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
             один клик.
           </p>
 
-          <div className={cn('mb-5 grid grid-cols-2 gap-2 text-[15px] leading-tight', isLight ? 'text-[#334155]' : 'text-dark-200')}>
-            {HERO_BENEFITS.map((item, idx) => (
+          <div className={cn('mb-5 flex flex-col gap-2 text-[15px] leading-tight', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+            {HERO_BENEFITS.map((item) => (
               <span
                 key={item}
                 className={cn(
-                  'rounded-full px-3 py-2 text-center',
-                  idx < 2 && 'col-span-2',
+                  'inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-3 py-2 text-center whitespace-nowrap',
                   isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
                 )}
               >
