@@ -283,21 +283,21 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
               Работает в России · Защита 24/7
             </div>
           </div>
-          <h1 className={cn('mb-2 text-[2.75rem] font-black leading-[0.95] tracking-[-0.02em] sm:text-6xl', isLight ? 'text-[#111827]' : 'text-dark-50')}>
+          <h1 className={cn('mb-2 text-[2.35rem] font-black leading-[0.96] tracking-[-0.02em] sm:text-6xl', isLight ? 'text-[#111827]' : 'text-dark-50')}>
             VPN который{' '}
             <span className={isLight ? 'text-[#8b5cf6]' : 'text-[#a78bfa]'}>работает</span>
           </h1>
-          <p className={cn('mb-5 text-base leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
+          <p className={cn('mb-4 text-[15px] leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
             Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
             один клик.
           </p>
 
-          <div className={cn('mb-5 flex flex-col gap-2 text-[15px] leading-tight', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+          <div className={cn('mb-5 grid grid-cols-2 gap-2 text-[13px] leading-tight sm:text-[14px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
             {HERO_BENEFITS.map((item) => (
               <span
                 key={item}
                 className={cn(
-                  'inline-flex min-h-[48px] w-full items-center justify-center rounded-full px-3 py-2 text-center whitespace-nowrap',
+                  'inline-flex min-h-[40px] w-full items-center justify-center rounded-full px-2.5 py-1.5 text-center',
                   isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
                 )}
               >
@@ -313,7 +313,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                 target="_blank"
                 rel="noopener noreferrer"
                 className={cn(
-                  'inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-4 py-2.5 text-center text-sm font-semibold text-white transition-all hover:-translate-y-0.5',
+                  'inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-4 py-3 text-center text-base font-semibold text-white transition-all hover:-translate-y-0.5',
                   isLight
                     ? 'from-[#a78bfa] via-[#8b5cf6] to-[#7c3aed] shadow-[0_0_0_1px_rgba(139,92,246,0.35),0_12px_30px_rgba(139,92,246,0.34)] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.52),0_16px_34px_rgba(139,92,246,0.44)]'
                     : 'from-[#8b5cf6] to-[#7c3aed] shadow-[0_10px_28px_rgba(139,92,246,0.34)] hover:shadow-[0_14px_30px_rgba(139,92,246,0.45)]',
@@ -332,7 +332,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             <a
               href={cabinetLoginUrl}
               className={cn(
-                'rounded-xl border px-4 py-2.5 text-center text-sm font-semibold transition-all hover:-translate-y-0.5',
+                'rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all hover:-translate-y-0.5',
                 isLight
                   ? 'border-[#cfd4df] bg-[#eceef3] text-[#111827] hover:border-[#bca4ff] hover:shadow-[0_8px_22px_rgba(167,139,250,0.20)]'
                   : 'border-dark-700 bg-dark-800 text-dark-100 hover:border-accent-400/70 hover:bg-dark-700 hover:shadow-[0_8px_22px_rgba(56,189,248,0.18)]',
