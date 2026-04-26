@@ -206,7 +206,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                'flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border shadow-[0_8px_24px_rgba(15,23,42,0.18)]',
+                'flex h-10 w-10 items-center justify-center overflow-hidden rounded-2xl border shadow-[0_8px_24px_rgba(15,23,42,0.18)]',
                 isLight
                   ? 'border-[#d6d9e4] bg-[#f8f9fe] shadow-[0_12px_32px_rgba(139,92,246,0.16)]'
                   : 'border-dark-700 bg-dark-900/90',
@@ -222,7 +222,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             </div>
             <div
               className={cn(
-                'text-[2rem] font-bold leading-none tracking-[-0.03em]',
+                'text-[1.75rem] font-bold leading-none tracking-[-0.03em] sm:text-[2rem]',
                 isLight ? 'text-[#111827]' : 'text-dark-50',
               )}
             >
