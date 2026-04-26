@@ -292,7 +292,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             один клик.
           </p>
 
-          <div className={cn('mb-5 grid grid-cols-2 gap-2 text-[13px] leading-tight sm:text-[14px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+          <div className={cn('mb-5 grid grid-cols-2 gap-x-2 gap-y-3 text-[13px] leading-tight sm:text-[14px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
             {HERO_BENEFITS.map((item) => (
               <span
                 key={item}
