@@ -7,6 +7,8 @@ import type { AnimationConfig } from '@/components/ui/backgrounds/types';
 import { StaticBackgroundRenderer } from '../components/backgrounds/BackgroundRenderer';
 import { formatPrice } from '../utils/format';
 import { cn } from '../lib/utils';
+import { brandingApi, preloadLogo } from '@/api/branding';
+import { useTheme } from '@/hooks/useTheme';
 
 const SPOTLIGHT_DARK_FALLBACK: AnimationConfig = {
   enabled: true,
@@ -22,15 +24,45 @@ function useTelegramLink() {
   return username ? `https://t.me/${username}` : null;
 }
 
+const WHY_US_ITEMS = [
+  {
+    emoji: '⚡',
+    text: 'Быстрое и стабильное соединение — работает там, где другие тормозят',
+  },
+  {
+    emoji: '🔄',
+    text: 'Без ручных настроек — подключился и забыл, всё работает само',
+  },
+  {
+    emoji: '🇷🇺',
+    text: 'Российские сайты работают с включённым VPN — банки, госуслуги, маркетплейсы',
+  },
+  {
+    emoji: '🔒',
+    text: 'Шифрование трафика — никто не увидит, что вы смотрите и скачиваете',
+  },
+];
+
 export default function PublicLanding() {
   const { slug } = useParams<{ slug: string }>();
   const { t, i18n } = useTranslation();
   const telegramLink = useTelegramLink();
+  const { isDark, toggleTheme, canToggle } = useTheme();
 
   const { data: config, isLoading, error } = useQuery({
     queryKey: ['public-landing-page', slug, i18n.language],
     queryFn: () => landingApi.getConfig(slug!, i18n.language),
     enabled: !!slug,
+    staleTime: 60_000,
+  });
+
+  const { data: branding } = useQuery({
+    queryKey: ['public-branding'],
+    queryFn: async () => {
+      const data = await brandingApi.getBranding();
+      await preloadLogo(data);
+      return data;
+    },
     staleTime: 60_000,
   });
 
@@ -47,7 +79,11 @@ export default function PublicLanding() {
     });
   }, [config]);
 
-  const bgConfig = config?.background_config ?? SPOTLIGHT_DARK_FALLBACK;
+  // Keep this landing always on spotlight + dark style
+  const bgConfig = SPOTLIGHT_DARK_FALLBACK;
+  const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
+  const logoLetter = branding?.logo_letter || 'G';
+  const appName = branding?.name || 'GhostVPN';
 
   if (isLoading) {
     return (
@@ -72,60 +108,71 @@ export default function PublicLanding() {
       <StaticBackgroundRenderer config={bgConfig} />
 
       <div className="relative mx-auto max-w-5xl px-4 pb-16 pt-6 sm:px-6">
-        <header className="mb-6 flex items-center justify-between">
-          <div className="text-sm font-semibold text-dark-100">{config.title}</div>
-          <div className="flex items-center gap-2 text-xs">
-            {telegramLink && (
-              <a
-                href={telegramLink}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="rounded-lg border border-dark-700 bg-dark-800/70 px-3 py-1.5 text-dark-200 transition-colors hover:border-dark-600"
-              >
-                {t('landing.support', 'Поддержка')}
-              </a>
-            )}
-            <Link
-              to="/login"
-              className="rounded-lg border border-dark-700 bg-dark-800/70 px-3 py-1.5 text-dark-200 transition-colors hover:border-dark-600"
-            >
-              {t('landing.cabinet', 'Кабинет')}
-            </Link>
+        <header className="mb-6 flex items-center justify-between gap-3">
+          <div className="flex items-center gap-3 rounded-xl border border-dark-700/70 bg-dark-900/70 px-3 py-2 backdrop-blur">
+            <div className="flex h-8 w-8 items-center justify-center overflow-hidden rounded-lg bg-dark-800">
+              {logoUrl ? (
+                <img src={logoUrl} alt={appName} className="h-full w-full object-cover" />
+              ) : (
+                <span className="text-sm font-bold text-dark-100">{logoLetter}</span>
+              )}
+            </div>
+            <div className="text-2xl font-semibold text-dark-100">{appName}</div>
           </div>
+
+          <button
+            type="button"
+            onClick={toggleTheme}
+            disabled={!canToggle}
+            className="inline-flex h-10 w-10 items-center justify-center rounded-xl border border-dark-600 bg-dark-900/80 text-dark-100 transition-colors hover:border-accent-400/70 hover:bg-dark-800 disabled:cursor-not-allowed disabled:opacity-40"
+            title={t('landing.toggleTheme', 'Переключить тему')}
+          >
+            {isDark ? '☀️' : '🌙'}
+          </button>
         </header>
 
-        <section className="mx-auto mb-8 max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 shadow-xl shadow-black/20 backdrop-blur">
+        <section className="mx-auto mb-8 max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 shadow-xl shadow-black/20 backdrop-blur transition-all hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.22)]">
           <div className="mb-2 inline-flex rounded-full border border-accent-400/30 bg-accent-500/10 px-3 py-1 text-xs text-accent-300">
             {t('landing.tagline', 'Работает в России · Защита 24/7')}
           </div>
-          <h1 className="mb-2 text-3xl font-bold leading-tight text-dark-50">
-            {config.title || t('landing.defaultTitle', 'VPN который просто работает')}
+          <h1 className="mb-2 text-4xl font-bold leading-tight text-dark-50">
+            VPN который работает
           </h1>
-          {config.subtitle && <p className="mb-4 text-sm text-dark-300">{config.subtitle}</p>}
+          <p className="mb-4 text-sm text-dark-200">
+            Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
+            один клик.
+          </p>
 
           <div className="mb-4 flex flex-wrap gap-2 text-xs text-dark-200">
-            <span className="rounded-full bg-dark-800 px-3 py-1">{t('landing.fast', 'Быстрое подключение')}</span>
-            <span className="rounded-full bg-dark-800 px-3 py-1">{t('landing.noManual', 'Без ручных настроек')}</span>
-            <span className="rounded-full bg-dark-800 px-3 py-1">{t('landing.runet', 'Рунет работает')}</span>
+            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+              ⚡ Быстрое подключение
+            </span>
+            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+              🔄 Без ручных настроек
+            </span>
+            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+              🇷🇺 Рунет работает
+            </span>
+            <span className="rounded-full border border-dark-600 bg-dark-800 px-3 py-1">
+              💰 от 100 ₽/мес
+            </span>
           </div>
 
-          <div className="grid gap-2 sm:grid-cols-2">
+          <div className="flex flex-col gap-2">
             {telegramLink && (
               <a
                 href={telegramLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-xl bg-accent-500 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-400"
+                className="inline-flex items-center justify-center gap-2 rounded-xl bg-accent-500 px-4 py-2.5 text-center text-sm font-semibold text-white transition-colors hover:bg-accent-400"
               >
+                <span aria-hidden="true">✈️</span>
                 {t('landing.startTelegram', 'Начать через Telegram')}
               </a>
             )}
             <Link
               to="/login"
-              className={cn(
-                'rounded-xl border border-dark-700 bg-dark-800 px-4 py-2.5 text-center text-sm font-semibold text-dark-100 transition-colors hover:border-dark-600',
-                !telegramLink && 'sm:col-span-2',
-              )}
+              className="rounded-xl border border-dark-700 bg-dark-800 px-4 py-2.5 text-center text-sm font-semibold text-dark-100 transition-colors hover:border-accent-400/70 hover:bg-dark-700"
             >
               {t('landing.siteLogin', 'Личный кабинет')}
             </Link>
@@ -133,13 +180,21 @@ export default function PublicLanding() {
         </section>
 
         {tariffs.length > 0 && (
-          <section className="mx-auto mb-8 max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 backdrop-blur">
+          <section className="mx-auto mb-8 max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 backdrop-blur transition-all hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.18)]">
             <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-dark-400">
               {t('landing.tariffs', 'Тарифы')}
             </h2>
             <div className="space-y-3">
               {tariffs.slice(0, 3).map(({ tariff, period }) => (
-                <div key={tariff.id} className="rounded-2xl border border-dark-700 bg-dark-800/60 p-4">
+                <div
+                  key={tariff.id}
+                  className="relative rounded-2xl border border-dark-700 bg-dark-800/60 p-4 transition-all hover:border-accent-400/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.16)]"
+                >
+                  {tariff.name.toLowerCase().includes('pro') && (
+                    <span className="absolute -top-2 left-4 rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
+                      Популярный
+                    </span>
+                  )}
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className="text-sm font-semibold text-dark-100">{tariff.name}</p>
@@ -164,21 +219,28 @@ export default function PublicLanding() {
           </section>
         )}
 
-        {config.features.length > 0 && (
-          <section className="mx-auto max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 backdrop-blur">
-            <h2 className="mb-4 text-xs font-semibold uppercase tracking-wide text-dark-400">
-              {t('landing.whyUs', 'Почему мы')}
+        <section className="mx-auto max-w-xl rounded-3xl border border-dark-700/60 bg-dark-900/70 p-5 backdrop-blur transition-all hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.18)]">
+          <div className="mb-3 flex items-center gap-2">
+            <h2 className="text-xs font-semibold uppercase tracking-wide text-dark-400">
+              Почему мы
             </h2>
-            <div className="space-y-3">
-              {config.features.map((feature, idx) => (
-                <div key={`${feature.title}-${idx}`} className="rounded-2xl border border-dark-700 bg-dark-800/60 p-3">
-                  <p className="mb-1 text-sm font-semibold text-dark-100">{feature.title}</p>
-                  <p className="text-xs text-dark-300">{feature.description}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-        )}
+            <span className="inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-2 py-0.5 text-[10px] text-success-400">
+              <span className="h-1.5 w-1.5 rounded-full bg-success-400" />
+              онлайн
+            </span>
+          </div>
+          <div className="space-y-3">
+            {WHY_US_ITEMS.map((item) => (
+              <div
+                key={item.text}
+                className="rounded-2xl border border-dark-700 bg-dark-800/60 p-3 text-sm text-dark-200 transition-all hover:border-accent-400/70 hover:bg-dark-800"
+              >
+                <span className="mr-2">{item.emoji}</span>
+                {item.text}
+              </div>
+            ))}
+          </div>
+        </section>
       </div>
     </div>
   );
