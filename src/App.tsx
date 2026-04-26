@@ -1,4 +1,4 @@
-import { lazy, Suspense, type ComponentType } from 'react';
+import { lazy, Suspense, useEffect, type ComponentType } from 'react';
 import { Routes, Route, Navigate, useLocation, useParams } from 'react-router';
 import { useAuthStore } from './store/auth';
 
@@ -222,34 +222,60 @@ function LegacySubscriptionRedirect() {
   return <Navigate to={`/subscriptions/${subscriptionId}`} replace />;
 }
 
+function ExternalRedirect({ to }: { to: string }) {
+  useEffect(() => {
+    window.location.replace(to);
+  }, [to]);
+
+  return <PageLoader variant="dark" />;
+}
+
 function App() {
   useAnalyticsCounters();
-  const location = useLocation();
+  const isRootLandingHost =
+    typeof window !== 'undefined' &&
+    (window.location.hostname.toLowerCase() === 'ghostvpn.cc' ||
+      window.location.hostname.toLowerCase() === 'www.ghostvpn.cc');
 
-  if (typeof window !== 'undefined') {
-    const host = window.location.hostname.toLowerCase();
-    const isRootLandingHost = host === 'ghostvpn.cc' || host === 'www.ghostvpn.cc';
-
-    if (isRootLandingHost) {
-      const path = location.pathname.toLowerCase();
-      const isAuthPath =
-        path === '/login' ||
-        path === '/register' ||
-        path === '/forgot-password' ||
-        path.startsWith('/auth/') ||
-        path === '/reset-password' ||
-        path === '/verify-email';
-
-      if (isAuthPath) {
-        window.location.replace('https://app.ghostvpn.cc/login');
-        return <PageLoader variant="dark" />;
-      }
-
-      if (path !== '/' && !path.startsWith('/landing/')) {
-        window.location.replace('https://ghostvpn.cc/');
-        return <PageLoader variant="dark" />;
-      }
-    }
+  if (isRootLandingHost) {
+    return (
+      <>
+        <BlockingOverlay />
+        <Routes>
+          <Route
+            path="/"
+            element={
+              <ErrorBoundary level="app">
+                <LazyPage>
+                  <PublicLanding forcedSlug="main" />
+                </LazyPage>
+              </ErrorBoundary>
+            }
+          />
+          <Route
+            path="/landing/:slug"
+            element={
+              <ErrorBoundary level="app">
+                <LazyPage>
+                  <PublicLanding />
+                </LazyPage>
+              </ErrorBoundary>
+            }
+          />
+          <Route path="/login" element={<ExternalRedirect to="https://app.ghostvpn.cc/login" />} />
+          <Route path="/register" element={<ExternalRedirect to="https://app.ghostvpn.cc/login" />} />
+          <Route
+            path="/forgot-password"
+            element={<ExternalRedirect to="https://app.ghostvpn.cc/login" />}
+          />
+          <Route
+            path="/auth/*"
+            element={<ExternalRedirect to="https://app.ghostvpn.cc/login" />}
+          />
+          <Route path="*" element={<Navigate to="/" replace />} />
+        </Routes>
+      </>
+    );
   }
 
   return (

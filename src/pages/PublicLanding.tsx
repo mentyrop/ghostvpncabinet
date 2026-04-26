@@ -65,8 +65,9 @@ const HERO_BENEFITS = [
   '💰 от 100 ₽/мес',
 ];
 
-export default function PublicLanding() {
-  const { slug } = useParams<{ slug: string }>();
+export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = {}) {
+  const { slug: slugFromRoute } = useParams<{ slug: string }>();
+  const slug = forcedSlug ?? slugFromRoute ?? 'main';
   const { t, i18n } = useTranslation();
   const telegramLink = useTelegramLink();
   const supportLink = useSupportLink(telegramLink);
@@ -78,8 +79,8 @@ export default function PublicLanding() {
 
   const { data: config, isLoading, error } = useQuery({
     queryKey: ['public-landing-page', slug, i18n.language],
-    queryFn: () => landingApi.getConfig(slug!, i18n.language),
-    enabled: !!slug,
+    queryFn: () => landingApi.getConfig(slug, i18n.language),
+    enabled: true,
     staleTime: 60_000,
   });
 
