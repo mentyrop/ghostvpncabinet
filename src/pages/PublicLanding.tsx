@@ -60,7 +60,7 @@ const HERO_BENEFITS = [
   '⚡ Быстрое подключение',
   '🔄 Без ручных настроек',
   '🇷🇺 Рунет работает',
-  '💰 от 100 ₽/мес',
+  '💰 от 99 ₽/мес',
 ];
 
 function formatRubPrice(kopeks: number) {
@@ -261,20 +261,20 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
 
         <section
           className={cn(
-            'mx-auto mb-8 max-w-xl rounded-3xl border p-5 shadow-xl backdrop-blur transition-all',
+            'mx-auto mb-8 max-w-xl rounded-3xl border p-6 shadow-xl backdrop-blur transition-all',
             isLight
               ? 'border-[#d4d8e3] bg-[#f8f9fc]/95 shadow-[0_6px_28px_rgba(15,23,42,0.08)] hover:border-[#bca4ff]'
               : 'border-dark-700/60 bg-dark-900/70 shadow-black/20 hover:border-accent-400/60 hover:shadow-[0_0_26px_rgba(168,85,247,0.22)]',
           )}
         >
-          <div className="mb-2 flex flex-col items-start gap-1.5">
-            <div className="inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-3 py-1 text-[11px] font-medium text-success-400">
+          <div className="mb-3 flex flex-col items-start gap-2">
+            <div className="inline-flex items-center gap-1 rounded-full border border-success-500/30 bg-success-500/10 px-3.5 py-1.5 text-[12px] font-medium text-success-400">
               <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-success-400" />
-              онлайн
+              Онлайн
             </div>
             <div
               className={cn(
-                'inline-flex rounded-full px-3 py-1 text-xs',
+                'inline-flex rounded-full px-3.5 py-1.5 text-xs',
                 isLight
                   ? 'border border-[#d7c9fb] bg-[#f2edff] text-[#8b5cf6]'
                   : 'border border-accent-400/30 bg-accent-500/10 text-accent-300',
@@ -283,16 +283,16 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
               Работает в России · Защита 24/7
             </div>
           </div>
-          <h1 className={cn('mb-2 text-[2.35rem] font-black leading-[0.96] tracking-[-0.02em] sm:text-[3.35rem]', isLight ? 'text-[#111827]' : 'text-dark-50')}>
+          <h1 className={cn('mb-3 text-[2.35rem] font-black leading-[0.96] tracking-[-0.02em] sm:text-[3.35rem]', isLight ? 'text-[#111827]' : 'text-dark-50')}>
             VPN который{' '}
             <span className={isLight ? 'text-[#8b5cf6]' : 'text-[#a78bfa]'}>работает</span>
           </h1>
-          <p className={cn('mb-4 text-base leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
+          <p className={cn('mb-5 text-base leading-relaxed', isLight ? 'text-[#4b5563]' : 'text-dark-200')}>
             Работает быстро и стабильно — российские сайты не ломаются, зарубежные открываются в
             один клик.
           </p>
 
-          <div className={cn('mb-5 grid grid-cols-2 gap-x-2 gap-y-3 text-[14px] leading-tight sm:text-[15px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+          <div className={cn('mb-6 grid grid-cols-2 gap-x-2 gap-y-3 text-[14px] leading-tight sm:text-[15px]', isLight ? 'text-[#334155]' : 'text-dark-200')}>
             {HERO_BENEFITS.map((item) => (
               <span
                 key={item}
@@ -306,7 +306,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             ))}
           </div>
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-3">
             {telegramLink && (
               <a
                 href={telegramLink}
