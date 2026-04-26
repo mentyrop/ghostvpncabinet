@@ -6,7 +6,6 @@ import { landingApi } from '../api/landings';
 import type { AnimationConfig } from '@/components/ui/backgrounds/types';
 import { StaticBackgroundRenderer } from '../components/backgrounds/BackgroundRenderer';
 import { formatPrice } from '../utils/format';
-import { cn } from '../lib/utils';
 import { brandingApi, preloadLogo } from '@/api/branding';
 import { useTheme } from '@/hooks/useTheme';
 
