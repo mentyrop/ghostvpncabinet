@@ -124,6 +124,10 @@ export default function PublicLanding() {
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
   const logoLetter = branding?.logo_letter || 'G';
   const appName = branding?.name || 'GhostVPN';
+  const cabinetLoginUrl =
+    typeof window !== 'undefined' && (window.location.hostname === 'ghostvpn.cc' || window.location.hostname === 'www.ghostvpn.cc')
+      ? 'https://app.ghostvpn.cc/login'
+      : '/login';
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -224,15 +228,15 @@ export default function PublicLanding() {
           </div>
 
           <div className="flex items-center gap-3">
-            <Link
-              to="/login"
+            <a
+              href={cabinetLoginUrl}
               className={cn(
                 'text-sm font-medium transition-colors',
                 isLight ? 'text-[#4b5563] hover:text-[#111827]' : 'text-dark-300 hover:text-dark-100',
               )}
             >
               Кабинет
-            </Link>
+            </a>
             <button
               type="button"
               onClick={() => setIsLight((v) => !v)}
@@ -321,8 +325,8 @@ export default function PublicLanding() {
                 {t('landing.startTelegram', 'Начать через Telegram')}
               </a>
             )}
-            <Link
-              to="/login"
+            <a
+              href={cabinetLoginUrl}
               className={cn(
                 'rounded-xl border px-4 py-2.5 text-center text-sm font-semibold transition-all hover:-translate-y-0.5',
                 isLight
@@ -331,7 +335,7 @@ export default function PublicLanding() {
               )}
             >
               {t('landing.siteLogin', 'Личный кабинет')}
-            </Link>
+            </a>
           </div>
         </section>
 
@@ -456,8 +460,8 @@ export default function PublicLanding() {
                 <span>{telegramBotUsername ? `@${telegramBotUsername}` : 'Telegram'}</span>
               </a>
             )}
-            <Link
-              to="/login"
+            <a
+              href={cabinetLoginUrl}
               className={cn(
                 'inline-flex items-center gap-1.5 rounded-full border px-3 py-1 text-sm transition-colors',
                 isLight
@@ -467,7 +471,7 @@ export default function PublicLanding() {
             >
               <span>💻</span>
               <span>Личный кабинет</span>
-            </Link>
+            </a>
             {supportLink && (
               <a
                 href={supportLink}
