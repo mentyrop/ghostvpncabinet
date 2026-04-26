@@ -38,20 +38,31 @@ function useSupportLink(telegramLink: string | null) {
 const WHY_US_ITEMS = [
   {
     emoji: '⚡',
-    text: 'Быстрое и стабильное соединение — работает там, где другие тормозят',
+    accent: 'Быстрое и стабильное соединение',
+    text: '— работает там, где другие тормозят',
   },
   {
     emoji: '🔄',
-    text: 'Без ручных настроек — подключился и забыл, всё работает само',
+    accent: 'Без ручных настроек',
+    text: '— подключился и забыл, всё работает само',
   },
   {
     emoji: '🇷🇺',
-    text: 'Российские сайты работают с включённым VPN — банки, госуслуги, маркетплейсы',
+    accent: 'Российские сайты работают с включённым VPN',
+    text: '— банки, госуслуги, маркетплейсы',
   },
   {
     emoji: '🔒',
-    text: 'Шифрование трафика — никто не увидит, что вы смотрите и скачиваете',
+    accent: 'Шифрование трафика',
+    text: '— никто не увидит, что вы смотрите и скачиваете',
   },
+];
+
+const HERO_BENEFITS = [
+  '⚡ Быстрое подключение',
+  '🔄 Без ручных настроек',
+  '🇷🇺 Рунет работает',
+  '💰 от 100 ₽/мес',
 ];
 
 export default function PublicLanding() {
@@ -188,19 +199,26 @@ export default function PublicLanding() {
           <div className="flex items-center gap-3">
             <div
               className={cn(
-                'flex h-9 w-9 items-center justify-center overflow-hidden rounded-xl border',
-                isLight ? 'border-[#cfd4df] bg-[#f8f9fb]' : 'border-dark-700 bg-dark-900/80',
+                'flex h-12 w-12 items-center justify-center overflow-hidden rounded-2xl border shadow-[0_8px_24px_rgba(15,23,42,0.18)]',
+                isLight
+                  ? 'border-[#d6d9e4] bg-[#f8f9fe] shadow-[0_12px_32px_rgba(139,92,246,0.16)]'
+                  : 'border-dark-700 bg-dark-900/90',
               )}
             >
               {logoUrl ? (
                 <img src={logoUrl} alt={appName} className="h-full w-full object-cover" />
               ) : (
-                <span className={cn('text-sm font-bold', isLight ? 'text-[#121826]' : 'text-dark-100')}>
+                <span className={cn('text-base font-bold', isLight ? 'text-[#121826]' : 'text-dark-100')}>
                   {logoLetter}
                 </span>
               )}
             </div>
-            <div className={cn('text-2xl font-semibold', isLight ? 'text-[#111827]' : 'text-dark-100')}>
+            <div
+              className={cn(
+                'text-[2rem] font-bold leading-none tracking-[-0.03em]',
+                isLight ? 'text-[#111827]' : 'text-dark-50',
+              )}
+            >
               {appName}
             </div>
           </div>
@@ -266,39 +284,18 @@ export default function PublicLanding() {
             один клик.
           </p>
 
-          <div className={cn('mb-4 flex flex-wrap gap-2 text-xs', isLight ? 'text-[#334155]' : 'text-dark-200')}>
-            <span
-              className={cn(
-                'rounded-full px-3 py-1',
-                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
-              )}
-            >
-              ⚡ Быстрое подключение
-            </span>
-            <span
-              className={cn(
-                'rounded-full px-3 py-1',
-                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
-              )}
-            >
-              🔄 Без ручных настроек
-            </span>
-            <span
-              className={cn(
-                'rounded-full px-3 py-1',
-                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
-              )}
-            >
-              🇷🇺 Рунет работает
-            </span>
-            <span
-              className={cn(
-                'rounded-full px-3 py-1',
-                isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
-              )}
-            >
-              💰 от 100 ₽/мес
-            </span>
+          <div className={cn('mb-4 grid grid-cols-2 gap-2 text-xs', isLight ? 'text-[#334155]' : 'text-dark-200')}>
+            {HERO_BENEFITS.map((item) => (
+              <span
+                key={item}
+                className={cn(
+                  'rounded-full px-3 py-1 text-center',
+                  isLight ? 'border border-[#d1d5de] bg-[#eef0f5]' : 'border border-dark-600 bg-dark-800',
+                )}
+              >
+                {item}
+              </span>
+            ))}
           </div>
 
           <div className="flex flex-col gap-2">
@@ -307,7 +304,12 @@ export default function PublicLanding() {
                 href={telegramLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-[#8b5cf6] to-[#7c3aed] px-4 py-2.5 text-center text-sm font-semibold text-white transition-all hover:-translate-y-0.5 hover:shadow-[0_8px_24px_rgba(139,92,246,0.35)]"
+                className={cn(
+                  'inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-4 py-2.5 text-center text-sm font-semibold text-white transition-all hover:-translate-y-0.5',
+                  isLight
+                    ? 'from-[#a78bfa] via-[#8b5cf6] to-[#7c3aed] shadow-[0_0_0_1px_rgba(139,92,246,0.35),0_12px_30px_rgba(139,92,246,0.34)] hover:shadow-[0_0_0_1px_rgba(139,92,246,0.52),0_16px_34px_rgba(139,92,246,0.44)]'
+                    : 'from-[#8b5cf6] to-[#7c3aed] shadow-[0_10px_28px_rgba(139,92,246,0.34)] hover:shadow-[0_14px_30px_rgba(139,92,246,0.45)]',
+                )}
               >
                 <svg
                   aria-hidden="true"
@@ -346,21 +348,33 @@ export default function PublicLanding() {
               {t('landing.tariffs', 'Тарифы')}
             </h2>
             <div className="space-y-3">
-              {tariffs.slice(0, 3).map(({ tariff, period }) => (
-                <div
-                  key={tariff.id}
-                  className={cn(
-                    'relative rounded-2xl border p-4 transition-all',
-                    isLight
-                      ? 'border-[#d0d5de] bg-[#eef0f5] hover:border-[#bca4ff]'
-                      : 'border-dark-700 bg-dark-800/60 hover:border-accent-400/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.16)]',
-                  )}
-                >
-                  {tariff.name.toLowerCase().includes('pro') && (
-                    <span className="absolute -top-2 left-4 rounded-full bg-accent-500 px-2.5 py-0.5 text-[10px] font-semibold uppercase tracking-wide text-white">
-                      Популярный
-                    </span>
-                  )}
+              {tariffs.slice(0, 3).map(({ tariff, period }) => {
+                const isPopular = tariff.name.toLowerCase().includes('pro');
+                return (
+                  <div
+                    key={tariff.id}
+                    className={cn(
+                      'relative rounded-2xl border p-4 transition-all',
+                      isPopular && isLight && 'border-[#c8b1ff] bg-[#f3eefc] shadow-[0_10px_26px_rgba(139,92,246,0.16)]',
+                      isPopular && !isLight && 'border-[#3ba9db] bg-dark-800/80 shadow-[0_0_24px_rgba(56,189,248,0.18)]',
+                      !isPopular &&
+                        (isLight
+                          ? 'border-[#d0d5de] bg-[#eef0f5] hover:border-[#bca4ff]'
+                          : 'border-dark-700 bg-dark-800/60 hover:border-accent-400/70 hover:shadow-[0_0_20px_rgba(168,85,247,0.16)]'),
+                    )}
+                  >
+                    {isPopular && (
+                      <span
+                        className={cn(
+                          'absolute -top-3 left-4 rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-wide text-white',
+                          isLight
+                            ? 'bg-gradient-to-r from-[#a78bfa] to-[#7c3aed] shadow-[0_6px_14px_rgba(139,92,246,0.35)]'
+                            : 'bg-gradient-to-r from-[#22d3ee] to-[#0ea5e9] shadow-[0_6px_14px_rgba(56,189,248,0.35)]',
+                        )}
+                      >
+                        Популярный
+                      </span>
+                    )}
                   <div className="flex items-start justify-between gap-3">
                     <div>
                       <p className={cn('text-sm font-semibold', isLight ? 'text-[#111827]' : 'text-dark-100')}>
@@ -386,7 +400,8 @@ export default function PublicLanding() {
                     <span>{tariff.device_limit} {t('landing.devices', 'устройства')}</span>
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
           </section>
         )}
@@ -409,13 +424,14 @@ export default function PublicLanding() {
               <div
                 key={item.text}
                 className={cn(
-                  'rounded-2xl border p-3 text-sm transition-all',
+                  'rounded-2xl border p-4 text-sm leading-relaxed',
                   isLight
-                    ? 'border-[#d0d5de] bg-[#eef0f5] text-[#111827] hover:border-[#bca4ff]'
-                    : 'border-dark-700 bg-dark-800/60 text-dark-200 hover:border-accent-400/70 hover:bg-dark-800',
+                    ? 'border-[#cfd4df] bg-[#e8ebf3] text-[#111827]'
+                    : 'border-dark-700 bg-dark-800/65 text-dark-200',
                 )}
               >
                 <span className="mr-2">{item.emoji}</span>
+                <span className={cn('font-semibold', isLight ? 'text-[#8b5cf6]' : 'text-[#93c5fd]')}>{item.accent}</span>{' '}
                 {item.text}
               </div>
             ))}
