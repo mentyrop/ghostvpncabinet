@@ -185,6 +185,11 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
     typeof window !== 'undefined' && (window.location.hostname === 'ghostvpn.cc' || window.location.hostname === 'www.ghostvpn.cc')
       ? 'https://app.ghostvpn.cc/login'
       : '/login';
+  const trackGoal = (goal: 'start_telegram_click' | 'cabinet_click') => {
+    if (typeof window === 'undefined') return;
+    const w = window as Window & { ym?: (...args: unknown[]) => void };
+    w.ym?.(YA_METRIKA_ID, 'reachGoal', goal);
+  };
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
@@ -366,6 +371,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
                 href={telegramLink}
                 target="_blank"
                 rel="noopener noreferrer"
+                onClick={() => trackGoal('start_telegram_click')}
                 className={cn(
                   'inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r px-4 py-3 text-center text-base font-semibold text-white transition-all hover:-translate-y-0.5',
                   isLight
@@ -385,6 +391,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             )}
             <a
               href={cabinetLoginUrl}
+              onClick={() => trackGoal('cabinet_click')}
               className={cn(
                 'rounded-xl border px-4 py-3 text-center text-base font-semibold transition-all hover:-translate-y-0.5',
                 isLight
