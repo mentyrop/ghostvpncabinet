@@ -124,6 +124,7 @@ const AdminRemnawave = lazyWithRetry(() => import('./pages/AdminRemnawave'));
 const AdminRemnawaveSquadDetail = lazyWithRetry(() => import('./pages/AdminRemnawaveSquadDetail'));
 const AdminEmailTemplates = lazyWithRetry(() => import('./pages/AdminEmailTemplates'));
 const AdminTrafficUsage = lazyWithRetry(() => import('./pages/AdminTrafficUsage'));
+const AdminBulkActions = lazyWithRetry(() => import('./pages/AdminBulkActions'));
 const AdminSalesStats = lazyWithRetry(() => import('./pages/AdminSalesStats'));
 const AdminUpdates = lazyWithRetry(() => import('./pages/AdminUpdates'));
 const AdminUserDetail = lazyWithRetry(() => import('./pages/AdminUserDetail'));
@@ -147,6 +148,11 @@ const AdminReferralNetwork = lazyWithRetry(() => import('./pages/ReferralNetwork
 const NewsArticlePage = lazyWithRetry(() => import('./pages/NewsArticle'));
 const AdminNews = lazyWithRetry(() => import('./pages/AdminNews'));
 const AdminNewsCreate = lazyWithRetry(() => import('./pages/AdminNewsCreate'));
+
+// Info pages
+const InfoPageView = lazyWithRetry(() => import('./pages/InfoPageView'));
+const AdminInfoPages = lazyWithRetry(() => import('./pages/AdminInfoPages'));
+const AdminInfoPageEditor = lazyWithRetry(() => import('./pages/AdminInfoPageEditor'));
 
 function ProtectedRoute({
   children,
@@ -618,6 +624,16 @@ function App() {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/info/:slug"
+          element={
+            <ProtectedRoute>
+              <LazyPage>
+                <InfoPageView />
+              </LazyPage>
+            </ProtectedRoute>
+          }
+        />
 
         {/* Admin routes */}
         <Route
@@ -1031,6 +1047,16 @@ function App() {
           }
         />
         <Route
+          path="/admin/bulk-actions"
+          element={
+            <PermissionRoute permission="users:read">
+              <LazyPage>
+                <AdminBulkActions />
+              </LazyPage>
+            </PermissionRoute>
+          }
+        />
+        <Route
           path="/admin/payments"
           element={
             <PermissionRoute permission="payments:read">
@@ -1329,6 +1355,38 @@ function App() {
             <PermissionRoute permission="news:edit">
               <LazyPage>
                 <AdminNewsCreate />
+              </LazyPage>
+            </PermissionRoute>
+          }
+        />
+
+        {/* Info pages admin routes */}
+        <Route
+          path="/admin/info-pages"
+          element={
+            <PermissionRoute permission="settings:read">
+              <LazyPage>
+                <AdminInfoPages />
+              </LazyPage>
+            </PermissionRoute>
+          }
+        />
+        <Route
+          path="/admin/info-pages/create"
+          element={
+            <PermissionRoute permission="settings:edit">
+              <LazyPage>
+                <AdminInfoPageEditor />
+              </LazyPage>
+            </PermissionRoute>
+          }
+        />
+        <Route
+          path="/admin/info-pages/:id/edit"
+          element={
+            <PermissionRoute permission="settings:edit">
+              <LazyPage>
+                <AdminInfoPageEditor />
               </LazyPage>
             </PermissionRoute>
           }
