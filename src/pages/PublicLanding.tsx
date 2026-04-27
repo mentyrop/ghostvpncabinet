@@ -104,20 +104,21 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
   useEffect(() => {
     if (typeof window === 'undefined' || typeof document === 'undefined') return;
 
+    type YmFn = ((...args: unknown[]) => void) & { a?: unknown[][]; l?: number };
     const w = window as Window & {
-      ym?: (...args: unknown[]) => void;
+      ym?: YmFn;
       __ghostYmInited?: boolean;
     };
     const scriptSrc = `https://mc.yandex.ru/metrika/tag.js?id=${YA_METRIKA_ID}`;
     const hasScript = Array.from(document.scripts).some((s) => s.src === scriptSrc);
 
     if (!w.ym) {
-      w.ym = function (...args: unknown[]) {
-        const fn = w.ym as typeof w.ym & { a?: unknown[]; l?: number };
-        fn.a = fn.a || [];
-        fn.a.push(args);
+      const queuedYm: YmFn = (...args: unknown[]) => {
+        queuedYm.a = queuedYm.a || [];
+        queuedYm.a.push(args);
       };
-      (w.ym as typeof w.ym & { l?: number }).l = Date.now();
+      queuedYm.l = Date.now();
+      w.ym = queuedYm;
     }
 
     if (!hasScript) {
