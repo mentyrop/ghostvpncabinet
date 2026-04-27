@@ -575,7 +575,7 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
             )}
           </div>
           <p className={cn('text-center text-xs', isLight ? 'text-[#6b7280]' : 'text-dark-500')}>
-            © {new Date().getFullYear()} {appName.toLowerCase().includes('ghost') ? 'GhostVPN' : appName}
+            © 2025 {appName.toLowerCase().includes('ghost') ? 'GhostVPN' : appName}
           </p>
         </footer>
       </div>
