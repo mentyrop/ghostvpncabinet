@@ -24,8 +24,7 @@ const SPARKLES_BASE: AnimationConfig = {
 };
 
 function useTelegramLink() {
-  const username = (import.meta.env.VITE_TELEGRAM_BOT_USERNAME || '').replace('@', '');
-  return username ? `https://t.me/${username}` : null;
+  return 'https://t.me/ghostvlessbot?start=mn';
 }
 
 function useSupportLink(telegramLink: string | null) {
