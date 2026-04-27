@@ -6,6 +6,7 @@ import { brandingApi, preloadLogo } from '@/api/branding';
 import { cn } from '@/lib/utils';
 
 type FaqItem = { q: string; a: string };
+type LocationItem = { country: string; ms: number; flag: string; quality: number };
 
 const TELEGRAM_URL = 'https://t.me/ghostvlessbot?start=mn';
 
@@ -42,16 +43,16 @@ const FEATURE_ITEMS = [
   },
 ];
 
-const LOCATIONS = [
-  { country: 'Польша', ms: 20 },
-  { country: 'Норвегия', ms: 24 },
-  { country: 'Латвия', ms: 18 },
-  { country: 'Швеция', ms: 26 },
-  { country: 'Германия', ms: 39 },
-  { country: 'Казахстан', ms: 42 },
-  { country: 'Япония', ms: 110 },
-  { country: 'США', ms: 98 },
-  { country: 'Россия', ms: 9 },
+const LOCATIONS: LocationItem[] = [
+  { country: 'Польша', ms: 20, flag: '🇵🇱', quality: 4 },
+  { country: 'Норвегия', ms: 24, flag: '🇳🇴', quality: 4 },
+  { country: 'Латвия', ms: 18, flag: '🇱🇻', quality: 4 },
+  { country: 'Швеция', ms: 26, flag: '🇸🇪', quality: 4 },
+  { country: 'Германия', ms: 39, flag: '🇩🇪', quality: 3 },
+  { country: 'Казахстан', ms: 42, flag: '🇰🇿', quality: 3 },
+  { country: 'Япония', ms: 110, flag: '🇯🇵', quality: 2 },
+  { country: 'США', ms: 98, flag: '🇺🇸', quality: 2 },
+  { country: 'Россия', ms: 9, flag: '🇷🇺', quality: 4 },
 ];
 
 const FAQ_ITEMS: FaqItem[] = [
@@ -91,6 +92,26 @@ function periodLabel(days: number) {
   if (days >= 90) return '3 месяца';
   if (days >= 60) return '2 месяца';
   return '1 месяц';
+}
+
+function SignalBars({ quality }: { quality: number }) {
+  return (
+    <div className="flex items-end gap-1">
+      {[0, 1, 2, 3].map((idx) => (
+        <span
+          key={idx}
+          className={cn(
+            'w-[4px] rounded-full bg-gradient-to-b from-[#25c1ff] to-[#1d74f5]',
+            idx === 0 && 'h-[8px]',
+            idx === 1 && 'h-[11px]',
+            idx === 2 && 'h-[14px]',
+            idx === 3 && 'h-[17px]',
+            idx < quality ? 'opacity-100' : 'opacity-20',
+          )}
+        />
+      ))}
+    </div>
+  );
 }
 
 export default function PublicLandingSosa() {
@@ -164,12 +185,12 @@ export default function PublicLandingSosa() {
   const logoUrl = branding ? brandingApi.getLogoUrl(branding) : null;
 
   return (
-    <div className="min-h-dvh bg-gradient-to-b from-[#eaf3ff] to-[#f5f8ff] text-[#0f172a]">
+    <div className="min-h-dvh bg-[radial-gradient(85%_65%_at_15%_0%,#dbeeff_0%,#edf5ff_45%,#f5f8ff_100%)] text-[#0f172a]">
       <div className="mx-auto max-w-6xl px-4 pb-14 pt-4 sm:px-6 lg:px-8">
         <header className="sticky top-3 z-20 mb-8 rounded-2xl border border-[#d8e4f6] bg-white/85 px-4 py-3 shadow-[0_8px_30px_rgba(59,130,246,0.12)] backdrop-blur">
           <div className="flex items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="h-9 w-9 overflow-hidden rounded-xl border border-[#dbe2ef] bg-white">
+              <div className="h-9 w-9 overflow-hidden rounded-xl border border-[#dbe2ef] bg-white shadow-sm">
                 {logoUrl ? (
                   <img src={logoUrl} alt={appName} className="h-full w-full object-cover" />
                 ) : (
@@ -187,7 +208,7 @@ export default function PublicLandingSosa() {
             <div className="flex items-center gap-2">
               <a
                 href={cabinetLoginUrl}
-                className="rounded-full border border-[#d5e1f5] bg-white px-3 py-1.5 text-sm font-medium text-[#334155]"
+                className="rounded-full border border-[#d5e1f5] bg-white px-3 py-1.5 text-sm font-medium text-[#334155] transition-all duration-200 hover:border-[#bfd6fb] hover:shadow-[0_6px_16px_rgba(59,130,246,0.14)]"
               >
                 Кабинет
               </a>
@@ -195,7 +216,7 @@ export default function PublicLandingSosa() {
                 href={TELEGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-[#1d74f5] px-4 py-1.5 text-sm font-semibold text-white"
+                className="rounded-full bg-gradient-to-r from-[#1d74f5] to-[#2a86fb] px-4 py-1.5 text-sm font-semibold text-white shadow-[0_10px_18px_rgba(29,116,245,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_24px_rgba(29,116,245,0.34)]"
               >
                 Подключить
               </a>
@@ -203,7 +224,7 @@ export default function PublicLandingSosa() {
           </div>
         </header>
 
-        <section className="mb-8 rounded-3xl border border-[#d5e3f6] bg-white/85 p-6 shadow-[0_10px_40px_rgba(59,130,246,0.10)]">
+        <section className="mb-8 rounded-3xl border border-[#d5e3f6] bg-white/85 p-6 shadow-[0_12px_36px_rgba(59,130,246,0.12)]">
           <div className="grid gap-6 lg:grid-cols-[1.05fr_0.95fr]">
             <div>
               <div className="mb-4 inline-flex rounded-full border border-[#d5e3f6] bg-[#f7fbff] px-3 py-1 text-xs font-semibold text-[#1d74f5]">
@@ -223,34 +244,39 @@ export default function PublicLandingSosa() {
                   href={TELEGRAM_URL}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="rounded-full bg-[#1d74f5] px-5 py-2.5 text-sm font-semibold text-white"
+                  className="rounded-full bg-gradient-to-r from-[#1d74f5] to-[#2a86fb] px-5 py-2.5 text-sm font-semibold text-white shadow-[0_10px_18px_rgba(29,116,245,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_22px_rgba(29,116,245,0.34)]"
                 >
                   Подключить VPS
                 </a>
                 <a
                   href="#features"
-                  className="rounded-full border border-[#d5e3f6] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f172a]"
+                  className="rounded-full border border-[#d5e3f6] bg-white px-5 py-2.5 text-sm font-semibold text-[#0f172a] transition-all duration-200 hover:border-[#bfd6fb] hover:shadow-[0_8px_18px_rgba(59,130,246,0.12)]"
                 >
                   Возможности
                 </a>
               </div>
               <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-2xl border border-[#d8e4f6] bg-white p-4">
+                <div className="rounded-2xl border border-[#d8e4f6] bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(59,130,246,0.12)]">
                   <div className="text-3xl font-black text-[#0f172a]">5 дней</div>
                   <div className="mt-1 text-sm text-[#64748b]">Бесплатный пробный доступ</div>
                 </div>
-                <div className="rounded-2xl border border-[#d8e4f6] bg-white p-4">
+                <div className="rounded-2xl border border-[#d8e4f6] bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(59,130,246,0.12)]">
                   <div className="text-3xl font-black text-[#0f172a]">9 локаций</div>
                   <div className="mt-1 text-sm text-[#64748b]">Европа, Азия, США и Россия</div>
                 </div>
-                <div className="rounded-2xl border border-[#d8e4f6] bg-white p-4">
+                <div className="rounded-2xl border border-[#d8e4f6] bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(59,130,246,0.12)]">
                   <div className="text-3xl font-black text-[#0f172a]">10 устройств</div>
                   <div className="mt-1 text-sm text-[#64748b]">Один сервис для всей техники</div>
                 </div>
               </div>
             </div>
-            <div className="rounded-3xl border border-[#d8e4f6] bg-white p-5 shadow-[0_12px_36px_rgba(29,116,245,0.18)]">
-              <div className="mb-2 text-xs font-semibold uppercase text-[#64748b]">Sosa App</div>
+            <div className="rounded-3xl border border-[#d8e4f6] bg-white p-5 shadow-[0_14px_34px_rgba(29,116,245,0.2)]">
+              <div className="mb-2 flex flex-wrap items-center gap-2 text-xs font-semibold uppercase text-[#64748b]">
+                <span>Sosa App</span>
+                <span className="rounded-full bg-[#d9fff1] px-2 py-0.5 text-[10px] tracking-[0.06em] text-[#128a6f]">
+                  Ready in a minute
+                </span>
+              </div>
               <h3 className="mb-3 text-3xl font-black leading-tight">
                 Личный VPS без ручной
                 <br />
@@ -273,7 +299,7 @@ export default function PublicLandingSosa() {
                 href={TELEGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="block rounded-full bg-[#1d74f5] px-4 py-2.5 text-center text-sm font-semibold text-white"
+                className="block rounded-full bg-gradient-to-r from-[#1d74f5] to-[#2a86fb] px-4 py-2.5 text-center text-sm font-semibold text-white shadow-[0_10px_18px_rgba(29,116,245,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_22px_rgba(29,116,245,0.34)]"
               >
                 Подключить VPS
               </a>
@@ -297,7 +323,7 @@ export default function PublicLandingSosa() {
           </div>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {FEATURE_ITEMS.map((feature) => (
-              <div key={feature.title} className="rounded-2xl border border-[#d8e4f6] bg-white p-4">
+              <div key={feature.title} className="rounded-2xl border border-[#d8e4f6] bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(59,130,246,0.12)]">
                 <div className="mb-3 text-2xl">{feature.icon}</div>
                 <h3 className="mb-2 text-2xl font-black tracking-[-0.01em]">{feature.title}</h3>
                 <p className="text-sm leading-relaxed text-[#64748b]">{feature.text}</p>
@@ -308,7 +334,7 @@ export default function PublicLandingSosa() {
             href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 block rounded-full bg-[#1d74f5] px-4 py-3 text-center text-sm font-semibold text-white"
+            className="mt-5 block rounded-full bg-gradient-to-r from-[#1d74f5] to-[#2a86fb] px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_10px_18px_rgba(29,116,245,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_22px_rgba(29,116,245,0.34)]"
           >
             Попробовать бесплатно
           </a>
@@ -328,12 +354,17 @@ export default function PublicLandingSosa() {
           </div>
           <div className="grid gap-3 md:grid-cols-2 lg:grid-cols-3">
             {LOCATIONS.map((item) => (
-              <div key={item.country} className="flex items-center justify-between rounded-2xl border border-[#d8e4f6] bg-white px-4 py-3">
-                <div>
-                  <div className="font-semibold">{item.country}</div>
-                  <div className="text-sm text-[#64748b]">{item.ms} ms</div>
+              <div key={item.country} className="flex items-center justify-between rounded-2xl border border-[#d8e4f6] bg-white px-4 py-3 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(59,130,246,0.12)]">
+                <div className="flex items-center gap-2">
+                  <span className="text-lg">{item.flag}</span>
+                  <div>
+                    <div className="font-semibold">{item.country}</div>
+                    <div className="text-sm text-[#64748b]">{item.ms} ms</div>
+                  </div>
                 </div>
-                <span className="text-[#1d74f5]">📶</span>
+                <span className="text-[#1d74f5]">
+                  <SignalBars quality={item.quality} />
+                </span>
               </div>
             ))}
           </div>
@@ -341,7 +372,7 @@ export default function PublicLandingSosa() {
             href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 block rounded-full bg-[#1d74f5] px-4 py-3 text-center text-sm font-semibold text-white"
+            className="mt-5 block rounded-full bg-gradient-to-r from-[#1d74f5] to-[#2a86fb] px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_10px_18px_rgba(29,116,245,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_22px_rgba(29,116,245,0.34)]"
           >
             Попробовать бесплатно
           </a>
@@ -368,7 +399,7 @@ export default function PublicLandingSosa() {
               <div
                 key={plan.id}
                 className={cn(
-                  'relative rounded-2xl border border-[#d8e4f6] bg-white p-4',
+                  'relative rounded-2xl border border-[#d8e4f6] bg-white p-4 transition-all duration-200 hover:-translate-y-1 hover:shadow-[0_14px_24px_rgba(59,130,246,0.12)]',
                   plan.isPopular && 'ring-2 ring-[#5ea6ff]/35',
                 )}
               >
@@ -398,7 +429,7 @@ export default function PublicLandingSosa() {
             href={TELEGRAM_URL}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-5 block rounded-full bg-[#1d74f5] px-4 py-3 text-center text-sm font-semibold text-white"
+            className="mt-5 block rounded-full bg-gradient-to-r from-[#1d74f5] to-[#2a86fb] px-4 py-3 text-center text-sm font-semibold text-white shadow-[0_10px_18px_rgba(29,116,245,0.28)] transition-all duration-200 hover:-translate-y-0.5 hover:shadow-[0_14px_22px_rgba(29,116,245,0.34)]"
           >
             Попробовать бесплатно
           </a>
@@ -411,7 +442,7 @@ export default function PublicLandingSosa() {
           </p>
           <div className="space-y-3">
             {FAQ_ITEMS.map((item) => (
-              <details key={item.q} className="group rounded-2xl border border-[#d8e4f6] bg-white p-4">
+              <details key={item.q} className="group rounded-2xl border border-[#d8e4f6] bg-white p-4 transition-all duration-200 hover:border-[#c5daf8] hover:shadow-[0_10px_20px_rgba(59,130,246,0.10)]">
                 <summary className="cursor-pointer list-none font-semibold">
                   <div className="flex items-center justify-between gap-3">
                     <span>{item.q}</span>
@@ -444,13 +475,13 @@ export default function PublicLandingSosa() {
                 href={TELEGRAM_URL}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#1d4ed8]"
+                className="rounded-full bg-white px-4 py-2 text-sm font-semibold text-[#1d4ed8] transition-all duration-200 hover:-translate-y-0.5 hover:bg-[#f5f9ff]"
               >
                 Подключить
               </a>
               <a
                 href="#tariffs"
-                className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold text-white"
+                className="rounded-full border border-white/40 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5 hover:bg-white/20"
               >
                 Смотреть тарифы
               </a>
