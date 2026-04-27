@@ -7,6 +7,7 @@ import Sparkles from '@/components/ui/backgrounds/sparkles';
 import { brandingApi, preloadLogo } from '@/api/branding';
 import { cn } from '../lib/utils';
 
+const YA_METRIKA_ID = 108783613;
 const SPARKLES_BASE: AnimationConfig = {
   enabled: true,
   type: 'sparkles',
@@ -98,6 +99,58 @@ export default function PublicLanding({ forcedSlug }: { forcedSlug?: string } = 
 
   useEffect(() => {
     document.title = 'GhostVPN — Надёжный VPN';
+  }, []);
+
+  useEffect(() => {
+    if (typeof window === 'undefined' || typeof document === 'undefined') return;
+
+    const w = window as Window & {
+      ym?: (...args: unknown[]) => void;
+      __ghostYmInited?: boolean;
+    };
+    const scriptSrc = `https://mc.yandex.ru/metrika/tag.js?id=${YA_METRIKA_ID}`;
+    const hasScript = Array.from(document.scripts).some((s) => s.src === scriptSrc);
+
+    if (!w.ym) {
+      w.ym = function (...args: unknown[]) {
+        const fn = w.ym as typeof w.ym & { a?: unknown[]; l?: number };
+        fn.a = fn.a || [];
+        fn.a.push(args);
+      };
+      (w.ym as typeof w.ym & { l?: number }).l = Date.now();
+    }
+
+    if (!hasScript) {
+      const script = document.createElement('script');
+      script.async = true;
+      script.src = scriptSrc;
+      const firstScript = document.getElementsByTagName('script')[0];
+      if (firstScript?.parentNode) {
+        firstScript.parentNode.insertBefore(script, firstScript);
+      } else {
+        document.head.appendChild(script);
+      }
+    }
+
+    if (!w.__ghostYmInited) {
+      w.ym?.(YA_METRIKA_ID, 'init', {
+        ssr: true,
+        webvisor: true,
+        clickmap: true,
+        ecommerce: 'dataLayer',
+        referrer: document.referrer,
+        url: window.location.href,
+        accurateTrackBounce: true,
+        trackLinks: true,
+      });
+      w.__ghostYmInited = true;
+    }
+
+    // Explicit SPA page hit for landing route.
+    w.ym?.(YA_METRIKA_ID, 'hit', window.location.href, {
+      title: document.title,
+      referer: document.referrer,
+    });
   }, []);
 
   const tariffs = useMemo(() => {
