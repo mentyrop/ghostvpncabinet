@@ -202,7 +202,10 @@ export const promoOffersApi = {
   broadcastOffer: async (
     data: PromoOfferBroadcastRequest,
   ): Promise<PromoOfferBroadcastResponse> => {
-    const response = await apiClient.post('/cabinet/admin/promo-offers/broadcast', data);
+    const response = await apiClient.post('/cabinet/admin/promo-offers/broadcast', data, {
+      // Promo broadcast can process many users and exceed default 30s timeout.
+      timeout: 10 * 60 * 1000,
+    });
     return response.data;
   },
 
