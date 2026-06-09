@@ -28,6 +28,7 @@ import {
   ChannelSubscriptionScreen,
   BlacklistedScreen,
   AccountDeletedScreen,
+  ServiceUnavailableScreen,
 } from './components/blocking';
 import { ErrorBoundary } from './components/ErrorBoundary';
 import { PermissionRoute } from '@/components/auth/PermissionRoute';
@@ -67,6 +68,7 @@ const QuickPurchase = lazyWithRetry(() => import('./pages/QuickPurchase'));
 const PublicLanding = lazyWithRetry(() => import('./pages/PublicLanding'));
 const PublicLandingSosa = lazyWithRetry(() => import('./pages/PublicLandingSosa'));
 const PurchaseSuccess = lazyWithRetry(() => import('./pages/PurchaseSuccess'));
+const GiftClaim = lazyWithRetry(() => import('./pages/GiftClaim'));
 const RenewSubscription = lazyWithRetry(() => import('./pages/RenewSubscription'));
 const AutoLogin = lazyWithRetry(() => import('./pages/AutoLogin'));
 const TopUpMethodSelect = lazyWithRetry(() => import('./pages/TopUpMethodSelect'));
@@ -233,6 +235,10 @@ function BlockingOverlay() {
     return <AccountDeletedScreen />;
   }
 
+  if (blockingType === 'backend_unavailable') {
+    return <ServiceUnavailableScreen />;
+  }
+
   return null;
 }
 
@@ -339,6 +345,14 @@ function App() {
           element={
             <LazyPage>
               <PurchaseSuccess />
+            </LazyPage>
+          }
+        />
+        <Route
+          path="/buy/gift/:token"
+          element={
+            <LazyPage>
+              <GiftClaim />
             </LazyPage>
           }
         />
