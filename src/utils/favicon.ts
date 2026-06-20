@@ -6,6 +6,13 @@
  * logo (or a brand-letter monogram) via {@link setFavicon}.
  */
 
+/**
+ * GhostVPN brand favicon — the ghost mascot on a dark rounded tile, generated
+ * into /public. Used as the default tab icon when a deployment has no custom
+ * logo uploaded, so every tab carries the brand ghost instead of a plain letter.
+ */
+export const DEFAULT_FAVICON = '/favicon-192.png';
+
 /** Point the page favicon at `href`, creating the <link> if needed. */
 export function setFavicon(href: string): void {
   if (!href) return;

@@ -9,7 +9,7 @@ import {
   preloadLogo,
   isLogoPreloaded,
 } from '@/api/branding';
-import { setFavicon, letterFaviconDataUri, roundedFaviconDataUri } from '@/utils/favicon';
+import { setFavicon, roundedFaviconDataUri, DEFAULT_FAVICON } from '@/utils/favicon';
 
 const FALLBACK_NAME = import.meta.env.VITE_APP_NAME || 'Cabinet';
 const FALLBACK_LOGO = import.meta.env.VITE_APP_LOGO || 'V';
@@ -44,10 +44,10 @@ export function useBranding() {
   }, [appName]);
 
   // Update favicon — custom logo (rounded like the header tile) when available,
-  // else a brand-letter monogram so the tab always carries an icon.
+  // else the GhostVPN brand ghost so the tab always carries the brand icon.
   useEffect(() => {
     if (!logoUrl) {
-      setFavicon(letterFaviconDataUri(logoLetter));
+      setFavicon(DEFAULT_FAVICON);
       return;
     }
     let cancelled = false;
@@ -57,7 +57,7 @@ export function useBranding() {
     return () => {
       cancelled = true;
     };
-  }, [logoUrl, logoLetter]);
+  }, [logoUrl]);
 
   // Fullscreen setting from server
   const { data: fullscreenSetting } = useQuery({

@@ -30,7 +30,7 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import { cn } from '../lib/utils';
 import { getApiErrorMessage } from '../utils/api-error';
 import { formatPrice } from '../utils/format';
-import { setFavicon, letterFaviconDataUri, roundedFaviconDataUri } from '../utils/favicon';
+import { setFavicon, roundedFaviconDataUri, DEFAULT_FAVICON } from '../utils/favicon';
 import { useCurrency } from '../hooks/useCurrency';
 
 function detectContactType(value: string): 'email' | 'telegram' {
@@ -806,7 +806,7 @@ export default function QuickPurchase() {
     if (!branding) return;
     const logoUrl = branding.has_custom_logo ? getLogoBlobUrl() : null;
     if (!logoUrl) {
-      setFavicon(letterFaviconDataUri(branding.logo_letter));
+      setFavicon(DEFAULT_FAVICON);
       return;
     }
     let cancelled = false;
