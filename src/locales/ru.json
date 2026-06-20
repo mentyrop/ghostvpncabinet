@@ -732,7 +732,7 @@
         "description": "Оплата через PAL24"
       },
       "platega": {
-        "description": "Оплата через Platega"
+        "description": "СБП · Карты РФ"
       },
       "wata": {
         "description": "Оплата через Wata"

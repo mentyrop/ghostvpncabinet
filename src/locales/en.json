@@ -703,7 +703,7 @@
         "description": "Pay via PAL24"
       },
       "platega": {
-        "description": "Pay via Platega"
+        "description": "SBP · Russian bank cards"
       },
       "wata": {
         "description": "Pay via Wata"
