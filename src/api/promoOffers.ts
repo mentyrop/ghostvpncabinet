@@ -67,8 +67,21 @@ export interface PromoOfferBroadcastResponse {
   created_offers: number;
   user_ids: number[];
   target: string | null;
+  /** Счётчики email-уведомлений; доставка в Telegram отслеживается через broadcast_id */
   notifications_sent: number;
   notifications_failed: number;
+  /** Запись рассылки с прогрессом доставки в Telegram (null — слать было некому) */
+  broadcast_id: number | null;
+  telegram_recipients: number;
+}
+
+export interface PromoOfferSegment {
+  key: string;
+  count: number;
+}
+
+export interface PromoOfferSegmentListResponse {
+  segments: PromoOfferSegment[];
 }
 
 export interface PromoOfferTemplate {
@@ -206,6 +219,12 @@ export const promoOffersApi = {
       // Promo broadcast can process many users and exceed default 30s timeout.
       timeout: 10 * 60 * 1000,
     });
+    return response.data;
+  },
+
+  // Get recipient counts per target segment
+  getSegments: async (): Promise<PromoOfferSegmentListResponse> => {
+    const response = await apiClient.get('/cabinet/admin/promo-offers/segments');
     return response.data;
   },
 
